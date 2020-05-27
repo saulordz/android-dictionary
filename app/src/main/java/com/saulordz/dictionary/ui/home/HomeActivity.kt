@@ -34,9 +34,8 @@ class HomeActivity
     initViews()
   }
 
-  override fun displayError() {
-    showError("Error searching for $searchTerm")
-  }
+  override fun displayError() =
+    showError(getString(R.string.search_error_searching, searchTerm))
 
   override fun displaySearchResult(definitions: List<Definition>?) =
     definitionAdapter.submitList(definitions)
