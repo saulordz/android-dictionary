@@ -42,7 +42,7 @@ class HomeActivity
   }
 
   override fun displayError() =
-    showError("Error searching for $searchTerm")
+    showError(getString(R.string.search_error_searching, searchTerm))
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
