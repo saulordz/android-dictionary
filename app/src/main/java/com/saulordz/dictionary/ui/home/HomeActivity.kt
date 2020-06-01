@@ -8,6 +8,7 @@ import com.saulordz.dictionary.data.model.Definition
 import com.saulordz.dictionary.ui.home.recycler.DefinitionAdapter
 import com.saulordz.dictionary.utils.extensions.addDefaultVerticalSpacing
 import com.saulordz.dictionary.utils.extensions.getStringText
+import com.saulordz.dictionary.utils.extensions.setTextAndVisibility
 import kotlinx.android.synthetic.main.activity_home.*
 import toothpick.Scope
 import javax.inject.Inject
@@ -27,6 +28,12 @@ class HomeActivity
   override val searchTerm: String
     get() = a_home_search_input.getStringText()
 
+  override var definitions: List<Definition>? = null
+    set(value) = definitionAdapter.submitList(value)
+
+  override var word: String? = null
+    set(value) = a_home_word.setTextAndVisibility(value)
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_home)
@@ -36,9 +43,6 @@ class HomeActivity
 
   override fun displayError() =
     showError(getString(R.string.search_error_searching, searchTerm))
-
-  override fun displaySearchResult(definitions: List<Definition>?) =
-    definitionAdapter.submitList(definitions)
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())

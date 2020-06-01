@@ -10,7 +10,9 @@ interface HomeContract {
   interface View : MvpView {
     val searchTerm: String
 
-    fun displaySearchResult(definitions: List<Definition>?)
+    var definitions: List<Definition>?
+    var word: String?
+
     fun displayError()
   }
 

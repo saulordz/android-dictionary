@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Word">
+        <item name="android:textSize">@dimen/text_size_word</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
