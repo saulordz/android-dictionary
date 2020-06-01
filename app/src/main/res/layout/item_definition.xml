@@ -3,12 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_standard_horizontal"
+    android:gravity="center_vertical"
     android:orientation="vertical"
     tools:context=".ui.home.HomeActivity">
 
     <TextView
         android:id="@+id/i_definition_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="Definition long string of strings" />
 
 </LinearLayout>

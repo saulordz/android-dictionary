@@ -9,3 +9,12 @@ internal fun TextView.setText(@StringRes resId: Int, vararg args: Any?) {
 }
 
 internal fun TextView.getStringText() = text.toString()
+
+internal fun TextView.setTextAndVisibility(newText: String?) {
+  if (newText != null) {
+    text = newText
+    makeVisible()
+  } else {
+    makeGone()
+  }
+}
