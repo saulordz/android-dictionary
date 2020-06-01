@@ -23,7 +23,8 @@ class HomePresenter @Inject constructor(
   }
 
   private fun handleSearchSuccess(result: Word) = ifViewAttached { view ->
-    view.displaySearchResult(result.definitions?.values?.flatten())
+    view.word = result.word
+    view.definitions = result.definitions?.values?.flatten()
   }
 
   override fun onError(throwable: Throwable?, message: String) = ifViewAttached { view ->
