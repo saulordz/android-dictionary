@@ -4,6 +4,7 @@ import android.app.Application
 import com.saulordz.dictionary.di.DataModule
 import com.saulordz.dictionary.di.RxModule
 import com.saulordz.dictionary.di.Scopes
+import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.configuration.Configuration
@@ -19,6 +20,9 @@ open class DictionaryApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
+    if (BuildConfig.DEBUG) {
+      Timber.plant(Timber.DebugTree())
+    }
 
     initializeToothpick()
   }

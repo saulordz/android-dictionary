@@ -1,6 +1,5 @@
 package com.saulordz.dictionary.base
 
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter
 import com.hannesdorfmann.mosby3.mvp.MvpPresenter
@@ -9,6 +8,7 @@ import com.saulordz.dictionary.rx.SchedulerComposer
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import timber.log.Timber
 
 abstract class BasePresenter<V : MvpView>(
   open val schedulerComposer: SchedulerComposer
@@ -32,15 +32,19 @@ abstract class BasePresenter<V : MvpView>(
     compositeDisposable?.add(actionToDispose())
   }
 
+  internal open fun onError(throwable: Throwable? = null, message: String = DEFAULT_ERROR_MESSAGE) {
+    if (throwable != null) {
+      Timber.e(throwable)
+    } else {
+      Timber.e(message)
+    }
+  }
+
   internal fun Observable<Unit>.onObservableSuccess(onSuccess: (V) -> Unit) = addDisposable {
     share().subscribe({ ifViewAttached { onSuccess(it) } }) { onError(it) }
   }
 
-  internal open fun onError(throwable: Throwable? = null, message: String = "ERROR") {
-    if (throwable != null) {
-      Log.e("TAG_", message, throwable)
-    } else {
-      Log.e("TAG_", message)
-    }
+  private companion object {
+    private const val DEFAULT_ERROR_MESSAGE = "Unknown error"
   }
 }
