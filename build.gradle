@@ -42,5 +42,6 @@ ext {
     rxJavaVersion = '2.4.0'
     retrofitVersion = '2.6.1'
     robolectricVersion = '4.3'
+    timberVersion = '4.7.1'
     toothpickVersion = '3.1.0'
 }

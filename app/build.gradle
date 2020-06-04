@@ -36,6 +36,7 @@ dependencies {
     implementation "com.hannesdorfmann.mosby3:mvp:$mosbyVersion"
     implementation "com.jakewharton.rxbinding3:rxbinding:$rxBindingVersion"
     implementation "com.jakewharton.rxbinding3:rxbinding-core:$rxBindingVersion"
+    implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
