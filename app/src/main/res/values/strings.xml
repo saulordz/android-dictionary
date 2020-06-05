@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Diccionario</string>
+    <string name="app_name">Meanings</string>
 
     <string name="search_error_searching">Error al buscar: %s</string>
     <string name="message_search">Buscar</string>
