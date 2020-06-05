@@ -1,6 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -11,6 +10,16 @@
     <style name="AppTheme.Word">
         <item name="android:textSize">@dimen/text_size_word</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.BorderButton" parent="TextAppearance.AppCompat.Button">
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+        <item name="android:textSize">@dimen/text_size_button</item>
+        <item name="android:background">@drawable/background_button</item>
+        <item name="android:layout_height">@dimen/button_default_height</item>
+        <item name="android:layout_width">wrap_content</item>
     </style>
 
 </resources>
