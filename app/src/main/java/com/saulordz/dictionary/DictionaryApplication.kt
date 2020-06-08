@@ -8,7 +8,6 @@ import timber.log.Timber
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.configuration.Configuration
-import toothpick.configuration.ConfigurationHolder.configuration
 import toothpick.smoothie.module.SmoothieApplicationModule
 
 open class DictionaryApplication : Application() {
@@ -28,7 +27,11 @@ open class DictionaryApplication : Application() {
   }
 
   internal open fun initializeToothpick() {
-    Configuration.forDevelopment()
+    val configuration = if (BuildConfig.DEBUG) {
+      Configuration.forDevelopment()
+    } else {
+      Configuration.forProduction()
+    }
     Toothpick.setConfiguration(configuration)
 
     scope = Toothpick.openScope(Scopes.AppScope::class.java)
