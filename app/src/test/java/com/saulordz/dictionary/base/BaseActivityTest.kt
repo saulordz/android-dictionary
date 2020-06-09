@@ -3,6 +3,8 @@ package com.saulordz.dictionary.base
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ApplicationProvider
+import com.saulordz.dictionary.DictionaryApplication
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -20,6 +22,8 @@ abstract class BaseActivityTest {
 
   @Rule @JvmField val mockitoRule = MockitoJUnit.rule()
   @Rule @JvmField val toothpickRule: ToothPickRule = ToothPickRule(this)
+
+  val application = ApplicationProvider.getApplicationContext<DictionaryApplication>()
 
   @Before
   fun setUp() {

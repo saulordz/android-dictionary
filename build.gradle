@@ -29,6 +29,7 @@ task clean(type: Delete) {
 }
 
 ext {
+    androidxTestCoreVersion = '1.0.0'
     appcompatVersion = '1.1.0'
     assertkVersion = '0.22'
     legacySupportVersion = '1.0.0'

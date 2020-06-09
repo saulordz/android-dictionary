@@ -12,7 +12,7 @@ class HomePresenter @Inject constructor(
   private val googleDictionaryRepository: GoogleDictionaryRepository
 ) : BasePresenter<HomeContract.View>(schedulerComposer), HomeContract.Presenter {
 
-  override fun registerSearchButtonObservable(observable: Observable<Unit>) = observable.onObservableSuccess { view ->
+  override fun registerSearchButtonObservable(observable: Observable<Unit>) = observable.onObservableAction { view ->
     search(view.searchTerm)
   }
 

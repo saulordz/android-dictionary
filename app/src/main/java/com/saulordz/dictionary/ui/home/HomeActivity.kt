@@ -1,6 +1,7 @@
 package com.saulordz.dictionary.ui.home
 
 import android.os.Bundle
+import androidx.annotation.VisibleForTesting
 import com.jakewharton.rxbinding3.view.clicks
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivity
@@ -19,7 +20,7 @@ class HomeActivity
   @Inject
   lateinit var homePresenter: HomePresenter
 
-  private val definitionAdapter by lazy { DefinitionAdapter() }
+  @VisibleForTesting val definitionAdapter by lazy { DefinitionAdapter() }
 
   override fun addModules(scope: Scope): Scope = scope.installModules(HomeModule())
 
