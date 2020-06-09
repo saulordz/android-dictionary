@@ -40,7 +40,7 @@ abstract class BasePresenter<V : MvpView>(
     }
   }
 
-  internal fun Observable<Unit>.onObservableSuccess(onSuccess: (V) -> Unit) = addDisposable {
+  internal fun Observable<Unit>.onObservableAction(onSuccess: (V) -> Unit) = addDisposable {
     share().subscribe({ ifViewAttached { onSuccess(it) } }) { onError(it) }
   }
 

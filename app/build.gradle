@@ -24,6 +24,10 @@ android {
         }
     }
 
+    testOptions.unitTests {
+        includeAndroidResources = true
+    }
+
 }
 
 dependencies {
@@ -50,9 +54,10 @@ dependencies {
 
     kapt "com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion"
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation "androidx.test:core:$androidxTestCoreVersion"
     testImplementation "com.github.stephanenicolas.toothpick:toothpick-testing-junit4:$toothpickVersion"
     testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "com.willowtreeapps.assertk:assertk-jvm:$assertkVersion"
+    testImplementation 'junit:junit:4.12'
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }
