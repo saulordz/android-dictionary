@@ -26,7 +26,7 @@ class HomePresenterTest {
     on { definition } doReturn TEST_DEFINITION_TWO
   }
   private val mockWord = mock<Word> {
-    on { word } doReturn TEST_WORD
+    on { formattedWord } doReturn TEST_WORD
     on { definitions } doReturn mapOf(TEST_CATEGORY_ONE to listOf(mockDefinitionOne), TEST_CATEGORY_TWO to listOf(mockDefinitionTwo))
   }
   private val mockGoogleDictionaryRepository = mock<GoogleDictionaryRepository>()
@@ -47,10 +47,12 @@ class HomePresenterTest {
     presenter.registerSearchButtonObservable(clickObservable)
 
     verify(mockGoogleDictionaryRepository).singleSearchWord(TEST_SEARCH_TERM)
+    verify(mockWord).formattedWord
+    verify(mockWord).definitions
     verify(mockView).searchTerm
     verify(mockView).word = TEST_WORD
     verify(mockView).definitions = listOf(mockDefinitionOne, mockDefinitionTwo)
-    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository)
+    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository, mockWord)
   }
 
   @Test

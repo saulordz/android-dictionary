@@ -23,7 +23,7 @@ class HomePresenter @Inject constructor(
   }
 
   private fun handleSearchSuccess(result: Word) = ifViewAttached { view ->
-    view.word = result.word
+    view.word = result.formattedWord
     view.definitions = result.definitions?.values?.flatten()
   }
 
