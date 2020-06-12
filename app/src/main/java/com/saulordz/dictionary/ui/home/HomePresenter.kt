@@ -19,12 +19,7 @@ class HomePresenter @Inject constructor(
   private fun search(searchTerm: String) = addDisposable {
     googleDictionaryRepository.singleSearchWord(searchTerm)
       .compose(schedulerComposer.singleComposer())
-      .subscribe(::handleSearchSuccess) { onError(it) }
-  }
-
-  private fun handleSearchSuccess(result: Word) = ifViewAttached { view ->
-    view.word = result.word
-    view.definitions = result.definitions?.values?.flatten()
+      .subscribe({ ifViewAttached { view -> view.words = it } }) { onError(it) }
   }
 
   override fun onError(throwable: Throwable?, message: String) = ifViewAttached { view ->

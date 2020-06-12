@@ -1,7 +1,6 @@
 package com.saulordz.dictionary.ui.home
 
 import com.nhaarman.mockito_kotlin.*
-import com.saulordz.dictionary.data.model.Definition
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.data.repository.GoogleDictionaryRepository
 import com.saulordz.dictionary.rx.SchedulerComposer
@@ -19,15 +18,8 @@ class HomePresenterTest {
     override val ui = Schedulers.trampoline()
   })
 
-  private val mockDefinitionOne = mock<Definition> {
-    on { definition } doReturn TEST_DEFINITION_ONE
-  }
-  private val mockDefinitionTwo = mock<Definition> {
-    on { definition } doReturn TEST_DEFINITION_TWO
-  }
   private val mockWord = mock<Word> {
-    on { word } doReturn TEST_WORD
-    on { definitions } doReturn mapOf(TEST_CATEGORY_ONE to listOf(mockDefinitionOne), TEST_CATEGORY_TWO to listOf(mockDefinitionTwo))
+    on { formattedWord } doReturn TEST_WORD
   }
   private val mockGoogleDictionaryRepository = mock<GoogleDictionaryRepository>()
   private val mockView = mock<HomeContract.View>()
@@ -40,7 +32,7 @@ class HomePresenterTest {
 
   @Test
   fun testSearchSuccess() {
-    doReturn(Single.just(mockWord)).whenever(mockGoogleDictionaryRepository).singleSearchWord(any())
+    doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any())
     doReturn(TEST_SEARCH_TERM).whenever(mockView).searchTerm
     val clickObservable = Observable.just(Unit)
 
@@ -48,9 +40,8 @@ class HomePresenterTest {
 
     verify(mockGoogleDictionaryRepository).singleSearchWord(TEST_SEARCH_TERM)
     verify(mockView).searchTerm
-    verify(mockView).word = TEST_WORD
-    verify(mockView).definitions = listOf(mockDefinitionOne, mockDefinitionTwo)
-    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository)
+    verify(mockView).words = listOf(mockWord)
+    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository, mockWord)
   }
 
   @Test
@@ -71,9 +62,5 @@ class HomePresenterTest {
   private companion object {
     private const val TEST_SEARCH_TERM = "keyword"
     private const val TEST_WORD = "wordddd"
-    private const val TEST_DEFINITION_ONE = "1234definition"
-    private const val TEST_DEFINITION_TWO = "definitisagoon"
-    private const val TEST_CATEGORY_ONE = "kategory"
-    private const val TEST_CATEGORY_TWO = "categori"
   }
 }
