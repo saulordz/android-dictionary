@@ -20,12 +20,12 @@ class GoogleDictionaryRepositoryTest {
   fun testSingleSearchWordWithSuccess() {
     doReturn(Single.just<Response<List<Word>>>(Response.success(listOf(mockWord))))
       .whenever(mockDictionaryService).searchWord(any())
-    val observer = TestObserver<Word>()
+    val observer = TestObserver<List<Word>>()
 
     repository.singleSearchWord(TEST_SEARCH_TERM).subscribe(observer)
 
     verify(mockDictionaryService).searchWord(TEST_SEARCH_TERM)
-    observer.assertValue(mockWord)
+    observer.assertValue(listOf(mockWord))
     observer.assertComplete()
   }
 
@@ -33,7 +33,7 @@ class GoogleDictionaryRepositoryTest {
   fun testSingleSearchWordWithErrorCode() {
     doReturn(Single.error<Response<List<Word>>>(IllegalStateException()))
       .whenever(mockDictionaryService).searchWord(any())
-    val observer = TestObserver<Word>()
+    val observer = TestObserver<List<Word>>()
 
     repository.singleSearchWord(TEST_SEARCH_TERM).subscribe(observer)
 
@@ -45,24 +45,12 @@ class GoogleDictionaryRepositoryTest {
   fun testSingleSearchWordWithNullBody() {
     doReturn(Single.just<Response<List<Word>>>(Response.success(null)))
       .whenever(mockDictionaryService).searchWord(any())
-    val observer = TestObserver<Word>()
+    val observer = TestObserver<List<Word>>()
 
     repository.singleSearchWord(TEST_SEARCH_TERM).subscribe(observer)
 
     verify(mockDictionaryService).searchWord(TEST_SEARCH_TERM)
     observer.assertError { it is IllegalStateException && it.message == ERROR_SEARCHING_FOR_WORD }
-  }
-
-  @Test
-  fun testSingleSearchWordWithFirstElementNull() {
-    doReturn(Single.just<Response<List<Word>>>(Response.success(emptyList())))
-      .whenever(mockDictionaryService).searchWord(any())
-    val observer = TestObserver<Word>()
-
-    repository.singleSearchWord(TEST_SEARCH_TERM).subscribe(observer)
-
-    verify(mockDictionaryService).searchWord(TEST_SEARCH_TERM)
-    observer.assertNoValues()
   }
 
   private companion object {

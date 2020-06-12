@@ -1,4 +1,4 @@
-package com.saulordz.dictionary.ui.home.recycler
+package com.saulordz.dictionary.ui.home.recycler.definition
 
 import androidx.recyclerview.widget.DiffUtil
 import com.saulordz.dictionary.data.model.Definition

@@ -1,4 +1,4 @@
-package com.saulordz.dictionary.ui.home.recycler
+package com.saulordz.dictionary.ui.home.recycler.definition
 
 import assertk.assertThat
 import assertk.assertions.isFalse
