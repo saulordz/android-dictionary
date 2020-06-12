@@ -2,7 +2,7 @@ package com.saulordz.dictionary.ui.home
 
 import com.hannesdorfmann.mosby3.mvp.MvpPresenter
 import com.hannesdorfmann.mosby3.mvp.MvpView
-import com.saulordz.dictionary.data.model.Definition
+import com.saulordz.dictionary.data.model.Word
 import io.reactivex.Observable
 
 interface HomeContract {
@@ -10,8 +10,7 @@ interface HomeContract {
   interface View : MvpView {
     val searchTerm: String
 
-    var definitions: List<Definition>?
-    var word: String?
+    var words: List<Word>?
 
     fun displayError()
   }

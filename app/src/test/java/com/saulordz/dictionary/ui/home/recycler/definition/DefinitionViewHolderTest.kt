@@ -1,4 +1,4 @@
-package com.saulordz.dictionary.ui.home.recycler
+package com.saulordz.dictionary.ui.home.recycler.definition
 
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -6,6 +6,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivityTest
 import com.saulordz.dictionary.data.model.Definition
@@ -14,8 +16,8 @@ import org.junit.Test
 
 class DefinitionViewHolderTest : BaseActivityTest() {
 
-  private val mockDefinition = mock<Definition>{
-    on { definition }doReturn TEST_DEFINITION
+  private val mockDefinition = mock<Definition> {
+    on { definition } doReturn TEST_DEFINITION
   }
   private val itemView = LayoutInflater.from(application).inflate(R.layout.item_definition, FrameLayout(application), false)
   private val viewHolder = DefinitionViewHolder(itemView)
@@ -26,10 +28,12 @@ class DefinitionViewHolderTest : BaseActivityTest() {
 
     viewHolder.setDefinition(mockDefinition)
 
+    verify(mockDefinition).definition
+    verifyNoMoreInteractions(mockDefinition)
     assertThat(itemView.i_definition_text.text).isEqualTo(TEST_DEFINITION)
   }
 
-  private companion object{
+  private companion object {
     private const val TEST_DEFINITION = "testdef"
   }
 }

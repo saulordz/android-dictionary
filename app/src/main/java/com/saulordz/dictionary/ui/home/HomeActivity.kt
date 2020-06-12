@@ -5,11 +5,10 @@ import androidx.annotation.VisibleForTesting
 import com.jakewharton.rxbinding3.view.clicks
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivity
-import com.saulordz.dictionary.data.model.Definition
-import com.saulordz.dictionary.ui.home.recycler.DefinitionAdapter
+import com.saulordz.dictionary.data.model.Word
+import com.saulordz.dictionary.ui.home.recycler.word.WordAdapter
 import com.saulordz.dictionary.utils.extensions.addDefaultVerticalSpacing
 import com.saulordz.dictionary.utils.extensions.getStringText
-import com.saulordz.dictionary.utils.extensions.setTextAndVisibility
 import kotlinx.android.synthetic.main.activity_home.*
 import toothpick.Scope
 import javax.inject.Inject
@@ -20,7 +19,7 @@ class HomeActivity
   @Inject
   lateinit var homePresenter: HomePresenter
 
-  @VisibleForTesting val definitionAdapter by lazy { DefinitionAdapter() }
+  @VisibleForTesting val wordAdapter by lazy { WordAdapter() }
 
   override fun addModules(scope: Scope): Scope = scope.installModules(HomeModule())
 
@@ -29,11 +28,8 @@ class HomeActivity
   override val searchTerm: String
     get() = a_home_search_input.getStringText()
 
-  override var definitions: List<Definition>? = null
-    set(value) = definitionAdapter.submitList(value)
-
-  override var word: String? = null
-    set(value) = a_home_word.setTextAndVisibility(value)
+  override var words: List<Word>? = null
+    set(value) = wordAdapter.submitList(value)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -48,8 +44,8 @@ class HomeActivity
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
 
-    a_home_definition_recycler.adapter = definitionAdapter
-    a_home_definition_recycler.addDefaultVerticalSpacing()
+    a_home_word_recycler.adapter = wordAdapter
+    a_home_word_recycler.addDefaultVerticalSpacing()
   }
 
 }

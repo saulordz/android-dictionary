@@ -5,13 +5,19 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_standard_horizontal"
     android:gravity="center_vertical"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context=".ui.home.HomeActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_circle" />
 
     <TextView
         android:id="@+id/i_definition_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_standard_horizontal"
         tools:text="Definition long string of strings" />
 
 </LinearLayout>
