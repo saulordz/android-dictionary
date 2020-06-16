@@ -15,6 +15,7 @@ class HomePresenter @Inject constructor(
   override fun registerSearchButtonObservable(observable: Observable<Unit>) = observable.onObservableAction { view ->
     val searchTerm = view.searchTerm
     if (searchTerm.isNotBlank()) {
+      view.hideKeyboard()
       view.showProgress()
       search(searchTerm)
     }

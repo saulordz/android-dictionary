@@ -1,16 +1,14 @@
 package com.saulordz.dictionary.ui.home
 
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.VisibleForTesting
 import com.jakewharton.rxbinding3.view.clicks
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivity
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.ui.home.recycler.word.WordAdapter
-import com.saulordz.dictionary.utils.extensions.addDefaultVerticalSpacing
-import com.saulordz.dictionary.utils.extensions.getStringText
-import com.saulordz.dictionary.utils.extensions.makeGone
-import com.saulordz.dictionary.utils.extensions.makeVisible
+import com.saulordz.dictionary.utils.extensions.*
 import kotlinx.android.synthetic.main.activity_home.*
 import toothpick.Scope
 import javax.inject.Inject
@@ -20,6 +18,9 @@ class HomeActivity
 
   @Inject
   lateinit var homePresenter: HomePresenter
+
+  @Inject
+  lateinit var inputMethodManager: InputMethodManager
 
   @VisibleForTesting val wordAdapter by lazy { WordAdapter() }
 
@@ -46,6 +47,8 @@ class HomeActivity
   override fun showProgress() = a_home_spinner.makeVisible()
 
   override fun hideProgress() = a_home_spinner.makeGone()
+
+  override fun hideKeyboard() = hideInputKeyboard(inputMethodManager)
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())

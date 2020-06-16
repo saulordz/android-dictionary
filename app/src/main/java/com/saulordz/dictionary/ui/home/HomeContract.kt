@@ -15,6 +15,7 @@ interface HomeContract {
     fun displayError()
     fun showProgress()
     fun hideProgress()
+    fun hideKeyboard()
   }
 
   interface Presenter : MvpPresenter<View> {

@@ -1,6 +1,7 @@
 package com.saulordz.dictionary.ui.home
 
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.any
@@ -21,6 +22,7 @@ class HomeActivityTest : BaseActivityTest() {
   private val mockWord = mock<Word>()
 
   @Mock lateinit var mockHomePresenter: HomePresenter
+  @Mock lateinit var mockInputMethodManager: InputMethodManager
 
   @Test
   fun testOnCreateInteractions() = letActivity<HomeActivity> {
@@ -65,6 +67,12 @@ class HomeActivityTest : BaseActivityTest() {
     assertThat(it.a_home_spinner.visibility).isEqualTo(View.GONE)
   }
 
+  @Test
+  fun testHideKeyboard() = letActivity<HomeActivity> {
+    it.hideKeyboard()
+
+    verify(mockInputMethodManager).hideSoftInputFromWindow(it.window.decorView.rootView.windowToken, 0)
+  }
 
   private companion object {
     private const val TEST_SEARCH_TERM = "search_term"
