@@ -13,8 +13,11 @@ class HomePresenter @Inject constructor(
 ) : BasePresenter<HomeContract.View>(schedulerComposer), HomeContract.Presenter {
 
   override fun registerSearchButtonObservable(observable: Observable<Unit>) = observable.onObservableAction { view ->
-    view.showProgress()
-    search(view.searchTerm)
+    val searchTerm = view.searchTerm
+    if (searchTerm.isNotBlank()) {
+      view.showProgress()
+      search(searchTerm)
+    }
   }
 
   private fun search(searchTerm: String) = addDisposable {
