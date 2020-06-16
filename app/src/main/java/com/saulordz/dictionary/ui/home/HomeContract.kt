@@ -13,6 +13,8 @@ interface HomeContract {
     var words: List<Word>?
 
     fun displayError()
+    fun showProgress()
+    fun hideProgress()
   }
 
   interface Presenter : MvpPresenter<View> {

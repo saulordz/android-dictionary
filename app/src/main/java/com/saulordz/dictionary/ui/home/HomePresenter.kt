@@ -13,17 +13,24 @@ class HomePresenter @Inject constructor(
 ) : BasePresenter<HomeContract.View>(schedulerComposer), HomeContract.Presenter {
 
   override fun registerSearchButtonObservable(observable: Observable<Unit>) = observable.onObservableAction { view ->
+    view.showProgress()
     search(view.searchTerm)
   }
 
   private fun search(searchTerm: String) = addDisposable {
     googleDictionaryRepository.singleSearchWord(searchTerm)
       .compose(schedulerComposer.singleComposer())
-      .subscribe({ ifViewAttached { view -> view.words = it } }) { onError(it) }
+      .subscribe(::onSearchSuccess) { onError(it) }
   }
 
   override fun onError(throwable: Throwable?, message: String) = ifViewAttached { view ->
     super.onError(throwable, message)
+    view.hideProgress()
     view.displayError()
+  }
+
+  private fun onSearchSuccess(words: List<Word>) = ifViewAttached { view ->
+    view.hideProgress()
+    view.words = words
   }
 }

@@ -9,6 +9,8 @@ import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.ui.home.recycler.word.WordAdapter
 import com.saulordz.dictionary.utils.extensions.addDefaultVerticalSpacing
 import com.saulordz.dictionary.utils.extensions.getStringText
+import com.saulordz.dictionary.utils.extensions.makeGone
+import com.saulordz.dictionary.utils.extensions.makeVisible
 import kotlinx.android.synthetic.main.activity_home.*
 import toothpick.Scope
 import javax.inject.Inject
@@ -40,6 +42,10 @@ class HomeActivity
 
   override fun displayError() =
     showError(getString(R.string.search_error_searching, searchTerm))
+
+  override fun showProgress() = a_home_spinner.makeVisible()
+
+  override fun hideProgress() = a_home_spinner.makeGone()
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
