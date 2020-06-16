@@ -1,5 +1,6 @@
 package com.saulordz.dictionary.ui.home
 
+import com.jakewharton.rxbinding3.widget.TextViewEditorActionEvent
 import com.saulordz.dictionary.base.BasePresenter
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.data.repository.GoogleDictionaryRepository
@@ -12,7 +13,15 @@ class HomePresenter @Inject constructor(
   private val googleDictionaryRepository: GoogleDictionaryRepository
 ) : BasePresenter<HomeContract.View>(schedulerComposer), HomeContract.Presenter {
 
+  override fun registerSearchEditorActionEvent(observable: Observable<TextViewEditorActionEvent>) = observable.onObservableSearchAction {
+    prepareSearch()
+  }
+
   override fun registerSearchButtonObservable(observable: Observable<Unit>) = observable.onObservableAction { view ->
+    prepareSearch()
+  }
+
+  private fun prepareSearch() = ifViewAttached { view ->
     val searchTerm = view.searchTerm
     if (searchTerm.isNotBlank()) {
       view.hideKeyboard()

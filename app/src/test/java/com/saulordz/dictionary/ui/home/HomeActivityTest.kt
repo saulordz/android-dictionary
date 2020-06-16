@@ -28,6 +28,7 @@ class HomeActivityTest : BaseActivityTest() {
   fun testOnCreateInteractions() = letActivity<HomeActivity> {
     verify(mockHomePresenter).attachView(it)
     verify(mockHomePresenter).registerSearchButtonObservable(any())
+    verify(mockHomePresenter).registerSearchEditorActionEvent(any())
     verifyNoMoreInteractions(mockHomePresenter)
   }
 

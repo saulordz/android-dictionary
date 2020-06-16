@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.VisibleForTesting
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.widget.editorActionEvents
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivity
 import com.saulordz.dictionary.data.model.Word
@@ -52,6 +53,7 @@ class HomeActivity
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
+    presenter.registerSearchEditorActionEvent(a_home_search_input.editorActionEvents())
 
     a_home_word_recycler.adapter = wordAdapter
     a_home_word_recycler.addDefaultVerticalSpacing()

@@ -1,5 +1,7 @@
 package com.saulordz.dictionary.ui.home
 
+import android.view.inputmethod.EditorInfo
+import com.jakewharton.rxbinding3.widget.TextViewEditorActionEvent
 import com.nhaarman.mockito_kotlin.*
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.data.repository.GoogleDictionaryRepository
@@ -22,7 +24,11 @@ class HomePresenterTest {
     on { formattedWord } doReturn TEST_WORD
   }
   private val mockGoogleDictionaryRepository = mock<GoogleDictionaryRepository>()
+  private val mockTextViewEditorActionEvent = mock<TextViewEditorActionEvent> {
+    on { actionId } doReturn EditorInfo.IME_ACTION_SEARCH
+  }
   private val mockView = mock<HomeContract.View>()
+
   private val presenter = HomePresenter(schedulerComposer, mockGoogleDictionaryRepository)
 
   @Before
@@ -31,7 +37,36 @@ class HomePresenterTest {
   }
 
   @Test
-  fun testSearchSuccess() {
+  fun testRegisterSearchEditorActionObservableWithDoneAction() {
+    doReturn(EditorInfo.IME_ACTION_DONE).whenever(mockTextViewEditorActionEvent).actionId
+    val clickObservable = Observable.just(mockTextViewEditorActionEvent)
+
+    presenter.registerSearchEditorActionEvent(clickObservable)
+
+    verify(mockTextViewEditorActionEvent).actionId
+    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository, mockWord, mockTextViewEditorActionEvent)
+  }
+
+  @Test
+  fun testRegisterSearchEditorActionObservableSuccess() {
+    doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any())
+    doReturn(TEST_SEARCH_TERM).whenever(mockView).searchTerm
+    val clickObservable = Observable.just(mockTextViewEditorActionEvent)
+
+    presenter.registerSearchEditorActionEvent(clickObservable)
+
+    verify(mockGoogleDictionaryRepository).singleSearchWord(TEST_SEARCH_TERM)
+    verify(mockTextViewEditorActionEvent).actionId
+    verify(mockView).hideKeyboard()
+    verify(mockView).showProgress()
+    verify(mockView).searchTerm
+    verify(mockView).words = listOf(mockWord)
+    verify(mockView).hideProgress()
+    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository, mockWord, mockTextViewEditorActionEvent)
+  }
+
+  @Test
+  fun testRegisterSearchButtonObservableSuccess() {
     doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any())
     doReturn(TEST_SEARCH_TERM).whenever(mockView).searchTerm
     val clickObservable = Observable.just(Unit)
