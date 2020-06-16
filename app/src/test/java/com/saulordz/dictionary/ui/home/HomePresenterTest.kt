@@ -39,6 +39,7 @@ class HomePresenterTest {
     presenter.registerSearchButtonObservable(clickObservable)
 
     verify(mockGoogleDictionaryRepository).singleSearchWord(TEST_SEARCH_TERM)
+    verify(mockView).hideKeyboard()
     verify(mockView).showProgress()
     verify(mockView).searchTerm
     verify(mockView).words = listOf(mockWord)
@@ -67,6 +68,7 @@ class HomePresenterTest {
     presenter.registerSearchButtonObservable(clickObservable)
 
     verify(mockGoogleDictionaryRepository).singleSearchWord(TEST_SEARCH_TERM)
+    verify(mockView).hideKeyboard()
     verify(mockView).showProgress()
     verify(mockView).searchTerm
     verify(mockView).hideProgress()
