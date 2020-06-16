@@ -47,6 +47,17 @@ class HomePresenterTest {
   }
 
   @Test
+  fun testSearchWithEmptySearchTerm() {
+    doReturn("").whenever(mockView).searchTerm
+    val clickObservable = Observable.just(Unit)
+
+    presenter.registerSearchButtonObservable(clickObservable)
+
+    verify(mockView).searchTerm
+    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository)
+  }
+
+  @Test
   fun testSearchWithError() {
     doReturn(Single.error<IllegalStateException>(IllegalStateException()))
       .whenever(mockGoogleDictionaryRepository).singleSearchWord(any())
