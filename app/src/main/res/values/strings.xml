@@ -2,5 +2,8 @@
     <string name="app_name">Meanings</string>
 
     <string name="search_error_searching">Error al buscar: %s</string>
+
     <string name="message_search">Buscar</string>
+    <string name="message_toolbar_close">Cerrar</string>
+    <string name="message_toolbar_open">Abrir</string>
 </resources>

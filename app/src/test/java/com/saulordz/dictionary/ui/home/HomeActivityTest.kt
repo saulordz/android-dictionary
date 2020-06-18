@@ -1,5 +1,6 @@
 package com.saulordz.dictionary.ui.home
 
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import assertk.assertThat
@@ -71,6 +72,15 @@ class HomeActivityTest : BaseActivityTest() {
   @Test
   fun testHideKeyboard() = letActivity<HomeActivity> {
     it.hideKeyboard()
+
+    verify(mockInputMethodManager).hideSoftInputFromWindow(it.window.decorView.rootView.windowToken, 0)
+  }
+
+  @Test
+  fun testOnOptionItemSelectedClosesKeyboard() = letActivity<HomeActivity> {
+    val mockMenuItem = mock<MenuItem>()
+
+    it.onOptionsItemSelected(mockMenuItem)
 
     verify(mockInputMethodManager).hideSoftInputFromWindow(it.window.decorView.rootView.windowToken, 0)
   }

@@ -1,6 +1,7 @@
 package com.saulordz.dictionary.ui.home
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.VisibleForTesting
 import com.jakewharton.rxbinding3.view.clicks
@@ -38,8 +39,14 @@ class HomeActivity
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_home)
+    createDrawerToolbar()
 
     initViews()
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    hideKeyboard()
+    return super.onOptionsItemSelected(item)
   }
 
   override fun displayError() =

@@ -1,11 +1,16 @@
 package com.saulordz.dictionary.base
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.view.GravityCompat
 import com.hannesdorfmann.mosby3.mvp.MvpActivity
 import com.hannesdorfmann.mosby3.mvp.MvpPresenter
 import com.hannesdorfmann.mosby3.mvp.MvpView
 import com.saulordz.dictionary.di.Scopes
+import com.saulordz.dictionary.utils.extensions.closeDrawer
+import com.saulordz.dictionary.utils.extensions.isDrawerOpen
+import kotlinx.android.synthetic.main.activity_home.*
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieActivityModule
@@ -25,6 +30,22 @@ abstract class BaseActivity<V : MvpView, P : MvpPresenter<V>> :
     Toothpick.closeScope(this)
 
     super.onDestroy()
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+    android.R.id.home -> {
+      a_base_drawer.openDrawer(GravityCompat.START)
+      true
+    }
+    else -> super.onOptionsItemSelected(item)
+  }
+
+  override fun onBackPressed() {
+    if (isDrawerOpen) {
+      closeDrawer()
+    } else {
+      super.onBackPressed()
+    }
   }
 
   abstract fun addModules(scope: Scope): Scope
