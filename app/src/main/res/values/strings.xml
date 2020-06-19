@@ -3,7 +3,13 @@
 
     <string name="search_error_searching">Error al buscar: %s</string>
 
+    <string name="message_about">¿Quiénes somos?</string>
+    <string name="message_feedback">Dános tu opinión</string>
+    <string name="message_language">Idioma</string>
+    <string name="message_rate_app">Califícanos!</string>
     <string name="message_search">Buscar</string>
     <string name="message_toolbar_close">Cerrar</string>
     <string name="message_toolbar_open">Abrir</string>
+    <string name="message_settings">Opciones</string>
+    <string name="message_communicate">Comunícate</string>
 </resources>

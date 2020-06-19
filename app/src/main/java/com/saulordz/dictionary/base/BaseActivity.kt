@@ -48,6 +48,11 @@ abstract class BaseActivity<V : MvpView, P : MvpPresenter<V>> :
     }
   }
 
+  override fun onStop() {
+    super.onStop()
+    closeDrawer()
+  }
+
   abstract fun addModules(scope: Scope): Scope
 
   private fun initializeToothpick() {

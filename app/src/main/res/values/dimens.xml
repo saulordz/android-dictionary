@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="button_default_height">32dp</dimen>
 
     <dimen name="drawable_button_background_border">1dp</dimen>
@@ -12,5 +13,6 @@
     <dimen name="text_size_word">32sp</dimen>
     <dimen name="text_size_button">16sp</dimen>
 
+    <dimen name="toolbar_default_elevation">4dp</dimen>
 
 </resources>

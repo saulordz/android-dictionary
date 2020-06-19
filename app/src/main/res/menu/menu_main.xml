@@ -1,35 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@android:drawable/ic_menu_camera"
-            android:title="home" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@android:drawable/ic_menu_gallery"
-            android:title="gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="menu_slideshow" />
-        <item
-            android:id="@+id/nav_tools"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="menu_tools" />
-    </group>
-
-    <item android:title="Communicate">
+    <item android:title="@string/message_settings">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@android:drawable/ic_menu_share"
-                android:title="menu_share" />
+                android:id="@+id/m_main_language"
+                android:icon="@drawable/icon_language"
+                android:title="@string/message_language" />
+        </menu>
+    </item>
+
+    <item android:title="@string/message_communicate">
+        <menu>
             <item
-                android:id="@+id/nav_send"
-                android:icon="@android:drawable/ic_menu_send"
-                android:title="menu_send" />
+                android:id="@+id/m_main_about"
+                android:icon="@drawable/icon_about"
+                android:title="@string/message_about" />
+            <item
+                android:id="@+id/m_main_feedback"
+                android:icon="@drawable/icon_feedback"
+                android:title="@string/message_feedback" />
+            <item
+                android:id="@+id/m_main_rate_app"
+                android:icon="@drawable/icon_rate"
+                android:title="@string/message_rate_app" />
         </menu>
     </item>
 </menu>
