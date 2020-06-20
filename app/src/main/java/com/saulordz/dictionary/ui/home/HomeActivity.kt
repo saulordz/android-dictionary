@@ -3,8 +3,8 @@ package com.saulordz.dictionary.ui.home
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.annotation.VisibleForTesting
+import com.afollestad.materialdialogs.list.SingleChoiceListener
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.editorActionEvents
 import com.saulordz.dictionary.R
@@ -29,6 +29,16 @@ class HomeActivity
   lateinit var inputMethodManager: InputMethodManager
 
   @VisibleForTesting val wordAdapter by lazy { WordAdapter() }
+
+  @VisibleForTesting val onNavigationItemSelectedListener: ((MenuItem) -> Boolean) = {
+    onNavigationItemSelected(it)
+    closeDrawer()
+    true
+  }
+
+  @VisibleForTesting val onNewLanguageSelectedListener: SingleChoiceListener = { _, index, text ->
+    presenter.handleNewLanguageSelected(index = index, text = text)
+  }
 
   override fun addModules(scope: Scope): Scope = scope.installModules(HomeModule())
 
@@ -62,11 +72,8 @@ class HomeActivity
 
   override fun hideKeyboard() = hideInputKeyboard(inputMethodManager)
 
-  override fun showLanguageSelector(selectedLanguage: String, availableLanguages: List<String>) {
-    MaterialDialogHelper.showLanguagePickerDialog(this) { _, index, text ->
-      presenter.handleNewLanguageSelected(index, text)
-    }
-  }
+  override fun showLanguageSelector(selectedLanguage: String, availableLanguages: List<String>) =
+    MaterialDialogHelper.showLanguagePickerDialog(this, onNewLanguageSelectedListener)
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
@@ -74,40 +81,15 @@ class HomeActivity
 
     a_home_word_recycler.adapter = wordAdapter
     a_home_word_recycler.addDefaultVerticalSpacing()
-    i_main_navigation.setNavigationItemSelectedListener {
-      closeDrawer()
-      onNavigationItemSelected(it)
-    }
+    i_main_navigation.setNavigationItemSelectedListener(onNavigationItemSelectedListener)
   }
 
-  private fun onLanguageMenuItemSelected(): Boolean {
-    presenter.handleLanguageMenuItemSelected()
-    return true
-  }
-
-  private fun onAboutMenuItemSelected(): Boolean {
-    Toast.makeText(this, "Feature not yet implemented", Toast.LENGTH_LONG).show()
-    return true
-  }
-
-  private fun onFeedbackMenuItemSelected(): Boolean {
-    Toast.makeText(this, "Feature not yet implemented", Toast.LENGTH_LONG).show()
-    return true
-  }
-
-  private fun onRateAppMenuItemSelected(): Boolean {
-    Toast.makeText(this, "Feature not yet implemented", Toast.LENGTH_LONG).show()
-    return true
-  }
-
-  @VisibleForTesting
-  fun onNavigationItemSelected(item: MenuItem) =
+  private fun onNavigationItemSelected(item: MenuItem) =
     when (item.itemId) {
-      R.id.m_main_language -> onLanguageMenuItemSelected()
-      R.id.m_main_about -> onAboutMenuItemSelected()
-      R.id.m_main_feedback -> onFeedbackMenuItemSelected()
-      R.id.m_main_rate_app -> onRateAppMenuItemSelected()
-      else -> false
+      R.id.m_main_language -> presenter.handleLanguageMenuItemSelected()
+      R.id.m_main_about -> Unit
+      R.id.m_main_feedback -> Unit
+      R.id.m_main_rate_app -> Unit
+      else -> Unit
     }
-
 }

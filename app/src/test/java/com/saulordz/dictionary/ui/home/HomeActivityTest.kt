@@ -3,7 +3,6 @@ package com.saulordz.dictionary.ui.home
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
@@ -104,8 +103,15 @@ class HomeActivityTest : BaseActivityTest() {
     assertThat(dialog).hasPositiveText(application.getString(R.string.message_apply))
     assertThat(dialog).hasNegativeText(application.getString(R.string.message_cancel))
     assertThat(dialog).hasItemCount(2)
-    dialog.findViewById<Button>(R.id.md_button_positive).performClick()
-    verify(mockHomePresenter).handleNewLanguageSelected(0, testSelectedLanguage)
+  }
+
+  @Test
+  fun testOnNewLanguageSelectedListener() = letActivity<HomeActivity> {
+    val mockMaterialDialog = mock<MaterialDialog>()
+
+    it.onNewLanguageSelectedListener?.invoke(mockMaterialDialog, 0, TEST_WORD)
+
+    verify(mockHomePresenter).handleNewLanguageSelected(0, TEST_WORD)
   }
 
   @Test
@@ -114,7 +120,7 @@ class HomeActivityTest : BaseActivityTest() {
       on { itemId } doReturn R.id.m_main_language
     }
 
-    it.onNavigationItemSelected(mockMenuItem)
+    it.onNavigationItemSelectedListener(mockMenuItem)
 
     verify(mockHomePresenter).handleLanguageMenuItemSelected()
   }
