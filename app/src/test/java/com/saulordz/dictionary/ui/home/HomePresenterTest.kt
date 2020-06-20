@@ -111,6 +111,14 @@ class HomePresenterTest {
     verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository)
   }
 
+  @Test
+  fun testHandleLanguageMenuItemSelected() {
+    presenter.handleLanguageMenuItemSelected()
+
+    verify(mockView).showLanguageSelector(any(), any())
+    verifyNoMoreInteractions(mockView)
+  }
+
   private companion object {
     private const val TEST_SEARCH_TERM = "keyword"
     private const val TEST_WORD = "wordddd"

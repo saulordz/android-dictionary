@@ -3,19 +3,25 @@ package com.saulordz.dictionary.ui.home
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
+import assertk.assertions.isTrue
+import com.afollestad.materialdialogs.MaterialDialog
+import com.nhaarman.mockito_kotlin.*
+import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivityTest
 import com.saulordz.dictionary.data.model.Word
+import com.saulordz.dictionary.testUtils.hasItemCount
+import com.saulordz.dictionary.testUtils.hasNegativeText
+import com.saulordz.dictionary.testUtils.hasPositiveText
+import com.saulordz.dictionary.testUtils.hasTitle
 import com.saulordz.dictionary.utils.extensions.makeGone
 import com.saulordz.dictionary.utils.extensions.makeVisible
 import kotlinx.android.synthetic.main.activity_home.*
 import org.junit.Test
 import org.mockito.Mock
+import org.robolectric.shadows.ShadowAlertDialog
 
 
 class HomeActivityTest : BaseActivityTest() {
@@ -83,6 +89,34 @@ class HomeActivityTest : BaseActivityTest() {
     it.onOptionsItemSelected(mockMenuItem)
 
     verify(mockInputMethodManager).hideSoftInputFromWindow(it.window.decorView.rootView.windowToken, 0)
+  }
+
+  @Test
+  fun testShowLanguageSelector() = letActivity<HomeActivity> {
+    val testAvailableLanguages = application.resources.getStringArray(R.array.array_languages)
+    val testSelectedLanguage = testAvailableLanguages.first()
+
+    it.showLanguageSelector(testSelectedLanguage, testAvailableLanguages.asList())
+
+    val dialog = ShadowAlertDialog.getLatestDialog() as MaterialDialog
+    assertThat(dialog.isShowing).isTrue()
+    assertThat(dialog).hasTitle(application.getString(R.string.message_select_language))
+    assertThat(dialog).hasPositiveText(application.getString(R.string.message_apply))
+    assertThat(dialog).hasNegativeText(application.getString(R.string.message_cancel))
+    assertThat(dialog).hasItemCount(2)
+    dialog.findViewById<Button>(R.id.md_button_positive).performClick()
+    verify(mockHomePresenter).handleNewLanguageSelected(0, testSelectedLanguage)
+  }
+
+  @Test
+  fun testOnLanguageMenuItemSelected() = letActivity<HomeActivity> {
+    val mockMenuItem = mock<MenuItem> {
+      on { itemId } doReturn R.id.m_main_language
+    }
+
+    it.onNavigationItemSelected(mockMenuItem)
+
+    verify(mockHomePresenter).handleLanguageMenuItemSelected()
   }
 
   private companion object {

@@ -17,10 +17,13 @@ interface HomeContract {
     fun showProgress()
     fun hideProgress()
     fun hideKeyboard()
+    fun showLanguageSelector(selectedLanguage: String, availableLanguages: List<String>)
   }
 
   interface Presenter : MvpPresenter<View> {
     fun registerSearchButtonObservable(observable: Observable<Unit>)
     fun registerSearchEditorActionEvent(editorActionEvent: Observable<TextViewEditorActionEvent>)
+    fun handleLanguageMenuItemSelected()
+    fun handleNewLanguageSelected(index: Int, text: CharSequence)
   }
 }

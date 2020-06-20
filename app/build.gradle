@@ -42,6 +42,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "androidx.legacy:legacy-support-v4:$legacySupportVersion"
+    implementation "com.afollestad.material-dialogs:core:$materialDialogVersion"
+    implementation "com.afollestad.material-dialogs:bottomsheets:$materialDialogVersion"
     implementation "com.github.stephanenicolas.toothpick:smoothie:$toothpickVersion"
     implementation "com.google.android.material:material:$materialVersion"
     implementation "com.hannesdorfmann.mosby3:mvp:$mosbyVersion"

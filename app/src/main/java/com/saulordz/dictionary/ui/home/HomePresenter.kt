@@ -21,6 +21,16 @@ class HomePresenter @Inject constructor(
     prepareSearch()
   }
 
+  override fun handleLanguageMenuItemSelected() = ifViewAttached { view ->
+    view.showLanguageSelector("Espanol", listOf("Espanol", "Ingles"))
+    //get current system language
+    //get list of available languages
+  }
+
+  override fun handleNewLanguageSelected(index: Int, text: CharSequence) {
+
+  }
+
   private fun prepareSearch() = ifViewAttached { view ->
     val searchTerm = view.searchTerm
     if (searchTerm.isNotBlank()) {

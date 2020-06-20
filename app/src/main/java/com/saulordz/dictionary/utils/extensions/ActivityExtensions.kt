@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.saulordz.dictionary.R
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.include_main_navigation_drawer.*
+import kotlinx.android.synthetic.main.include_main_toolbar.*
 
 
 internal val AppCompatActivity.isDrawerOpen
@@ -16,13 +18,15 @@ internal fun AppCompatActivity.hideInputKeyboard(inputMethodManager: InputMethod
 }
 
 internal fun AppCompatActivity.createDrawerToolbar() {
-  setSupportActionBar(findViewById(R.id.i_main_toolbar))
+  setSupportActionBar(i_main_toolbar)
 
   val drawerToggle = ActionBarDrawerToggle(this, a_base_drawer, R.string.message_toolbar_open, R.string.message_toolbar_close)
   a_base_drawer.addDrawerListener(drawerToggle)
   drawerToggle.syncState()
 
   supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+  i_main_navigation.bringToFront()
 }
 
 internal fun AppCompatActivity.closeDrawer() =

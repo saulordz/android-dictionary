@@ -33,6 +33,7 @@ ext {
     assertkVersion = '0.22'
     legacySupportVersion = '1.0.0'
     materialVersion = '1.1.0'
+    materialDialogVersion = '3.2.1'
     mockitoKotlinVersion = '1.6.0'
     mosbyVersion = '3.1.1'
     moshiVersion = '1.8.0'
