@@ -3,16 +3,21 @@ package com.saulordz.dictionary.ui.home
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
-import com.afollestad.materialdialogs.list.SingleChoiceListener
+import com.afollestad.materialdialogs.DialogCallback
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.editorActionEvents
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivity
+import com.saulordz.dictionary.data.model.Language
+import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
+import com.saulordz.dictionary.ui.home.dialog.LanguageDialogAdapter
+import com.saulordz.dictionary.ui.home.dialog.OnLanguageClickedListener
 import com.saulordz.dictionary.ui.home.recycler.word.WordAdapter
 import com.saulordz.dictionary.utils.extensions.*
-import com.saulordz.dictionary.utils.widgets.MaterialDialogHelper
+import com.saulordz.dictionary.utils.helpers.MaterialDialogHelper
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.include_main_navigation_drawer.*
 import toothpick.Scope
@@ -30,15 +35,19 @@ class HomeActivity
 
   @VisibleForTesting val wordAdapter by lazy { WordAdapter() }
 
+  @VisibleForTesting val languageAdapter by lazy { LanguageDialogAdapter(onLanguageClickedListener) }
+
   @VisibleForTesting val onNavigationItemSelectedListener: ((MenuItem) -> Boolean) = {
     onNavigationItemSelected(it)
     closeDrawer()
     true
   }
 
-  @VisibleForTesting val onNewLanguageSelectedListener: SingleChoiceListener = { _, index, text ->
-    presenter.handleNewLanguageSelected(index = index, text = text)
+  @VisibleForTesting val onApplyLanguageListener: DialogCallback = { _ ->
+    presenter.handleNewLanguageApplied()
   }
+
+  @VisibleForTesting val onLanguageClickedListener: OnLanguageClickedListener = { presenter.handleLanguageClicked(it) }
 
   override fun addModules(scope: Scope): Scope = scope.installModules(HomeModule())
 
@@ -50,12 +59,19 @@ class HomeActivity
   override var words: List<Word>? = null
     set(value) = wordAdapter.submitList(value)
 
+  override var languageSelectionStates: List<LanguageSelectionState>? = null
+    set(value) {
+      field = value
+      languageAdapter.submitList(value)
+    }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_home)
     createDrawerToolbar()
 
     initViews()
+    presenter.initialize()
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -72,8 +88,12 @@ class HomeActivity
 
   override fun hideKeyboard() = hideInputKeyboard(inputMethodManager)
 
-  override fun showLanguageSelector(selectedLanguage: String, availableLanguages: List<String>) =
-    MaterialDialogHelper.showLanguagePickerDialog(this, onNewLanguageSelectedListener)
+  override fun showLanguageSelector() =
+    MaterialDialogHelper.showLanguagePickerDialog(this, onApplyLanguageListener, languageAdapter)
+
+  override fun applyNewLanguage(newLanguage: Language) {
+    Toast.makeText(this, getString(newLanguage.languageStringRes), Toast.LENGTH_SHORT).show()
+  }
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())

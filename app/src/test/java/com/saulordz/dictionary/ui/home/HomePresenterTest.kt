@@ -3,30 +3,31 @@ package com.saulordz.dictionary.ui.home
 import android.view.inputmethod.EditorInfo
 import com.jakewharton.rxbinding3.widget.TextViewEditorActionEvent
 import com.nhaarman.mockito_kotlin.*
+import com.saulordz.dictionary.data.model.Language
+import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.data.repository.GoogleDictionaryRepository
-import com.saulordz.dictionary.rx.SchedulerComposer
-import com.saulordz.dictionary.rx.SchedulerProvider
+import com.saulordz.dictionary.testUtils.RxTestUtils.schedulerComposer
+import com.saulordz.dictionary.ui.home.dialog.LanguageSelectionStateMapper
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import org.junit.Before
 import org.junit.Test
 
 class HomePresenterTest {
 
-  private val schedulerComposer = SchedulerComposer(object : SchedulerProvider {
-    override val io = Schedulers.trampoline()
-    override val ui = Schedulers.trampoline()
-  })
-
   private val mockWord = mock<Word> {
     on { formattedWord } doReturn TEST_WORD
+  }
+  private val mockLanguageSelectionState = mock<LanguageSelectionState> {
+    on { language } doReturn Language.SPANISH
+    on { selected } doReturn true
   }
   private val mockGoogleDictionaryRepository = mock<GoogleDictionaryRepository>()
   private val mockTextViewEditorActionEvent = mock<TextViewEditorActionEvent> {
     on { actionId } doReturn EditorInfo.IME_ACTION_SEARCH
   }
+
   private val mockView = mock<HomeContract.View>()
 
   private val presenter = HomePresenter(schedulerComposer, mockGoogleDictionaryRepository)
@@ -34,6 +35,16 @@ class HomePresenterTest {
   @Before
   fun setUp() {
     presenter.attachView(mockView)
+  }
+
+  @Test
+  fun testInitialize() {
+    val expectedLanguageSelectionStateList = LanguageSelectionStateMapper(null)
+
+    presenter.initialize()
+
+    verify(mockView).languageSelectionStates = expectedLanguageSelectionStateList
+    verifyNoMoreInteractions(mockView)
   }
 
   @Test
@@ -115,8 +126,41 @@ class HomePresenterTest {
   fun testHandleLanguageMenuItemSelected() {
     presenter.handleLanguageMenuItemSelected()
 
-    verify(mockView).showLanguageSelector(any(), any())
+    verify(mockView).showLanguageSelector()
     verifyNoMoreInteractions(mockView)
+  }
+
+  @Test
+  fun testHandleLanguageClicked() {
+    presenter.handleLanguageClicked(mockLanguageSelectionState)
+
+    verify(mockLanguageSelectionState).language
+    verify(mockView).languageSelectionStates = argThat {
+      size == Language.values().size &&
+          count { it.selected } == 1 &&
+          find { it.selected }!!.language == Language.SPANISH
+    }
+    verifyNoMoreInteractions(mockView, mockLanguageSelectionState)
+  }
+
+  @Test
+  fun testHandleLanguageClickedWithNullClickedLanguage() {
+    presenter.handleLanguageClicked(null)
+
+    verifyZeroInteractions(mockView)
+  }
+
+  @Test
+  fun testHandleNewLanguageApplied() {
+    doReturn(listOf(mockLanguageSelectionState)).whenever(mockView).languageSelectionStates
+
+    presenter.handleNewLanguageApplied()
+
+    verify(mockLanguageSelectionState).selected
+    verify(mockLanguageSelectionState).language
+    verify(mockView).languageSelectionStates
+    verify(mockView).applyNewLanguage(Language.SPANISH)
+    verifyNoMoreInteractions(mockView, mockLanguageSelectionState)
   }
 
   private companion object {

@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.nhaarman.mockito_kotlin.*
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivityTest
+import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.testUtils.hasItemCount
 import com.saulordz.dictionary.testUtils.hasNegativeText
@@ -26,6 +27,7 @@ import org.robolectric.shadows.ShadowAlertDialog
 class HomeActivityTest : BaseActivityTest() {
 
   private val mockWord = mock<Word>()
+  private val mockLanguageSelectionState = mock<LanguageSelectionState>()
 
   @Mock lateinit var mockHomePresenter: HomePresenter
   @Mock lateinit var mockInputMethodManager: InputMethodManager
@@ -33,6 +35,7 @@ class HomeActivityTest : BaseActivityTest() {
   @Test
   fun testOnCreateInteractions() = letActivity<HomeActivity> {
     verify(mockHomePresenter).attachView(it)
+    verify(mockHomePresenter).initialize()
     verify(mockHomePresenter).registerSearchButtonObservable(any())
     verify(mockHomePresenter).registerSearchEditorActionEvent(any())
     verifyNoMoreInteractions(mockHomePresenter)
@@ -54,6 +57,15 @@ class HomeActivityTest : BaseActivityTest() {
     it.words = listOf(mockWord)
 
     assertThat(it.wordAdapter.itemCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testSetLanguageSelectionStates() = letActivity<HomeActivity> {
+    it.languageSelectionStates = null
+
+    it.languageSelectionStates = listOf(mockLanguageSelectionState)
+
+    assertThat(it.languageAdapter.itemCount).isEqualTo(1)
   }
 
   @Test
@@ -92,26 +104,32 @@ class HomeActivityTest : BaseActivityTest() {
 
   @Test
   fun testShowLanguageSelector() = letActivity<HomeActivity> {
-    val testAvailableLanguages = application.resources.getStringArray(R.array.array_languages)
-    val testSelectedLanguage = testAvailableLanguages.first()
+    it.languageSelectionStates = listOf(mockLanguageSelectionState)
 
-    it.showLanguageSelector(testSelectedLanguage, testAvailableLanguages.asList())
+    it.showLanguageSelector()
 
     val dialog = ShadowAlertDialog.getLatestDialog() as MaterialDialog
     assertThat(dialog.isShowing).isTrue()
     assertThat(dialog).hasTitle(application.getString(R.string.message_select_language))
     assertThat(dialog).hasPositiveText(application.getString(R.string.message_apply))
     assertThat(dialog).hasNegativeText(application.getString(R.string.message_cancel))
-    assertThat(dialog).hasItemCount(2)
+    assertThat(dialog).hasItemCount(1)
   }
 
   @Test
-  fun testOnNewLanguageSelectedListener() = letActivity<HomeActivity> {
+  fun testOnApplyLanguageListener() = letActivity<HomeActivity> {
     val mockMaterialDialog = mock<MaterialDialog>()
 
-    it.onNewLanguageSelectedListener?.invoke(mockMaterialDialog, 0, TEST_WORD)
+    it.onApplyLanguageListener.invoke(mockMaterialDialog)
 
-    verify(mockHomePresenter).handleNewLanguageSelected(0, TEST_WORD)
+    verify(mockHomePresenter).handleNewLanguageApplied()
+  }
+
+  @Test
+  fun testOnLanguageClickedListener() = letActivity<HomeActivity> {
+    it.onLanguageClickedListener.invoke(mockLanguageSelectionState)
+
+    verify(mockHomePresenter).handleLanguageClicked(mockLanguageSelectionState)
   }
 
   @Test
