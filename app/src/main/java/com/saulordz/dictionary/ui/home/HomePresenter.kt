@@ -5,6 +5,7 @@ import com.saulordz.dictionary.base.BasePresenter
 import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.data.repository.GoogleDictionaryRepository
+import com.saulordz.dictionary.data.repository.SharedPreferencesRepository
 import com.saulordz.dictionary.rx.SchedulerComposer
 import com.saulordz.dictionary.ui.home.dialog.LanguageSelectionStateMapper
 import io.reactivex.Observable
@@ -12,11 +13,13 @@ import javax.inject.Inject
 
 class HomePresenter @Inject constructor(
   schedulerComposer: SchedulerComposer,
-  private val googleDictionaryRepository: GoogleDictionaryRepository
+  private val googleDictionaryRepository: GoogleDictionaryRepository,
+  private val sharedPreferencesRepository: SharedPreferencesRepository
 ) : BasePresenter<HomeContract.View>(schedulerComposer), HomeContract.Presenter {
 
   override fun initialize() = ifViewAttached { view ->
-    view.languageSelectionStates = LanguageSelectionStateMapper(null)
+    val userLanguage = sharedPreferencesRepository.getUserPreferredLanguage()
+    view.languageSelectionStates = LanguageSelectionStateMapper(userLanguage)
   }
 
   override fun registerSearchEditorActionEvent(observable: Observable<TextViewEditorActionEvent>) = observable.onObservableSearchAction {
@@ -38,8 +41,11 @@ class HomePresenter @Inject constructor(
   }
 
   override fun handleNewLanguageApplied() = ifViewAttached { view ->
-    val selectedLanguage = view.languageSelectionStates?.find { it.selected }
-    selectedLanguage?.let { view.applyNewLanguage(it.language) }
+    val selectedLanguage = view.languageSelectionStates?.find { it.selected }?.language
+    selectedLanguage?.let {
+      sharedPreferencesRepository.saveUserPreferredLanguage(it)
+      view.applyNewLanguage(it)
+    }
   }
 
   private fun prepareSearch() = ifViewAttached { view ->

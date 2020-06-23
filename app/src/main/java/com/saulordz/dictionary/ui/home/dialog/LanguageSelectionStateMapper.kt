@@ -8,7 +8,7 @@ object LanguageSelectionStateMapper : Function1<Language?, List<LanguageSelectio
 
   override fun invoke(selectedLanguage: Language?): List<LanguageSelectionState> {
     val availableLanguages = Language.values()
-    val languageToSelect = selectedLanguage.orDefault(availableLanguages.first())
+    val languageToSelect = selectedLanguage.orDefault(Language.DEFAULT_LANGUAGE)
     return availableLanguages.map { LanguageSelectionState(it, it == languageToSelect) }
   }
 }

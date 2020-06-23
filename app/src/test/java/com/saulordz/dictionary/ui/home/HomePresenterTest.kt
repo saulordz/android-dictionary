@@ -7,6 +7,7 @@ import com.saulordz.dictionary.data.model.Language
 import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.data.repository.GoogleDictionaryRepository
+import com.saulordz.dictionary.data.repository.SharedPreferencesRepository
 import com.saulordz.dictionary.testUtils.RxTestUtils.schedulerComposer
 import com.saulordz.dictionary.ui.home.dialog.LanguageSelectionStateMapper
 import io.reactivex.Observable
@@ -24,13 +25,14 @@ class HomePresenterTest {
     on { selected } doReturn true
   }
   private val mockGoogleDictionaryRepository = mock<GoogleDictionaryRepository>()
+  private val mockSharedPreferencesRepository = mock<SharedPreferencesRepository>()
   private val mockTextViewEditorActionEvent = mock<TextViewEditorActionEvent> {
     on { actionId } doReturn EditorInfo.IME_ACTION_SEARCH
   }
 
   private val mockView = mock<HomeContract.View>()
 
-  private val presenter = HomePresenter(schedulerComposer, mockGoogleDictionaryRepository)
+  private val presenter = HomePresenter(schedulerComposer, mockGoogleDictionaryRepository, mockSharedPreferencesRepository)
 
   @Before
   fun setUp() {
@@ -38,13 +40,27 @@ class HomePresenterTest {
   }
 
   @Test
-  fun testInitialize() {
-    val expectedLanguageSelectionStateList = LanguageSelectionStateMapper(null)
+  fun testInitializeWithNoUserPreferences() {
+    doReturn(Language.DEFAULT_LANGUAGE).whenever(mockSharedPreferencesRepository).getUserPreferredLanguage()
+    val expectedLanguageSelectionStateList = LanguageSelectionStateMapper(Language.DEFAULT_LANGUAGE)
 
     presenter.initialize()
 
+    verify(mockSharedPreferencesRepository).getUserPreferredLanguage()
     verify(mockView).languageSelectionStates = expectedLanguageSelectionStateList
-    verifyNoMoreInteractions(mockView)
+    verifyNoMoreInteractions(mockView, mockSharedPreferencesRepository)
+  }
+
+  @Test
+  fun testInitializeWithUserPreferences() {
+    doReturn(Language.SPANISH).whenever(mockSharedPreferencesRepository).getUserPreferredLanguage()
+    val expectedLanguageSelectionStateList = LanguageSelectionStateMapper(Language.SPANISH)
+
+    presenter.initialize()
+
+    verify(mockSharedPreferencesRepository).getUserPreferredLanguage()
+    verify(mockView).languageSelectionStates = expectedLanguageSelectionStateList
+    verifyNoMoreInteractions(mockView, mockSharedPreferencesRepository)
   }
 
   @Test
@@ -156,11 +172,12 @@ class HomePresenterTest {
 
     presenter.handleNewLanguageApplied()
 
+    verify(mockSharedPreferencesRepository).saveUserPreferredLanguage(Language.SPANISH)
     verify(mockLanguageSelectionState).selected
     verify(mockLanguageSelectionState).language
     verify(mockView).languageSelectionStates
     verify(mockView).applyNewLanguage(Language.SPANISH)
-    verifyNoMoreInteractions(mockView, mockLanguageSelectionState)
+    verifyNoMoreInteractions(mockView, mockLanguageSelectionState, mockSharedPreferencesRepository)
   }
 
   private companion object {

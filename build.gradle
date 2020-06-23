@@ -37,6 +37,7 @@ ext {
     mockitoKotlinVersion = '1.6.0'
     mosbyVersion = '3.1.1'
     moshiVersion = '1.8.0'
+    objectPreferenceVersion = '0.1.6'
     okHttpVersion = '4.7.2'
     rxAndroidVersion = '2.1.1'
     rxBindingVersion = '3.1.0'

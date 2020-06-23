@@ -1,6 +1,7 @@
 package com.saulordz.dictionary
 
 import android.app.Application
+import com.saulordz.dictionary.data.model.SharedPrefManager
 import com.saulordz.dictionary.di.DataModule
 import com.saulordz.dictionary.di.RxModule
 import com.saulordz.dictionary.di.Scopes
@@ -24,9 +25,10 @@ open class DictionaryApplication : Application() {
     }
 
     initializeToothpick()
+    initializeObjectPreference()
   }
 
-  internal open fun initializeToothpick() {
+  private fun initializeToothpick() {
     val configuration = if (BuildConfig.DEBUG) {
       Configuration.forDevelopment()
     } else {
@@ -38,4 +40,6 @@ open class DictionaryApplication : Application() {
     scope.installModules(*modules)
     Toothpick.inject(this, scope)
   }
+
+  private fun initializeObjectPreference() = SharedPrefManager.initialize(this)
 }
