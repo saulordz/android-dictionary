@@ -1,12 +1,11 @@
 package com.saulordz.dictionary.base
 
-import android.os.Bundle
+import android.content.Context
+import android.os.LocaleList
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import com.hannesdorfmann.mosby3.mvp.MvpActivity
-import com.hannesdorfmann.mosby3.mvp.MvpPresenter
-import com.hannesdorfmann.mosby3.mvp.MvpView
 import com.saulordz.dictionary.di.Scopes
 import com.saulordz.dictionary.utils.extensions.closeDrawer
 import com.saulordz.dictionary.utils.extensions.isDrawerOpen
@@ -16,15 +15,10 @@ import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieActivityModule
 
 
-abstract class BaseActivity<V : MvpView, P : MvpPresenter<V>> :
-  MvpActivity<V, P>(), MvpView {
+abstract class BaseActivity<V : BaseContract.View, P : BaseContract.Presenter<V>> :
+  MvpActivity<V, P>(), BaseContract.View {
 
   private lateinit var scope: Scope
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    initializeToothpick()
-    super.onCreate(savedInstanceState)
-  }
 
   override fun onDestroy() {
     Toothpick.closeScope(this)
@@ -53,6 +47,14 @@ abstract class BaseActivity<V : MvpView, P : MvpPresenter<V>> :
     closeDrawer()
   }
 
+  override fun attachBaseContext(newBase: Context?) {
+    initializeToothpick()
+    val customContext = createCustomContext(newBase)
+    super.attachBaseContext(customContext)
+  }
+
+  override fun recreateView() = recreate()
+
   abstract fun addModules(scope: Scope): Scope
 
   private fun initializeToothpick() {
@@ -60,6 +62,13 @@ abstract class BaseActivity<V : MvpView, P : MvpPresenter<V>> :
     scope.installModules(SmoothieActivityModule(this))
     addModules(scope)
     Toothpick.inject(this, scope)
+  }
+
+  private fun createCustomContext(context: Context?): Context? {
+    val customContext = createPresenter().createCustomContext(context)
+    val customLocales = customContext?.resources?.configuration?.locales
+    customLocales?.let { LocaleList.setDefault(it) }
+    return customContext
   }
 
   internal open fun showError(message: String) {

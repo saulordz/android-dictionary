@@ -19,12 +19,12 @@ class GoogleDictionaryRepositoryTest {
   @Test
   fun testSingleSearchWordWithSuccess() {
     doReturn(Single.just<Response<List<Word>>>(Response.success(listOf(mockWord))))
-      .whenever(mockDictionaryService).searchWord(any())
+      .whenever(mockDictionaryService).searchWord(any(), any())
     val observer = TestObserver<List<Word>>()
 
-    repository.singleSearchWord(TEST_SEARCH_TERM).subscribe(observer)
+    repository.singleSearchWord(TEST_TEST_LANGUAGE, TEST_SEARCH_TERM).subscribe(observer)
 
-    verify(mockDictionaryService).searchWord(TEST_SEARCH_TERM)
+    verify(mockDictionaryService).searchWord(TEST_TEST_LANGUAGE, TEST_SEARCH_TERM)
     observer.assertValue(listOf(mockWord))
     observer.assertComplete()
   }
@@ -32,28 +32,29 @@ class GoogleDictionaryRepositoryTest {
   @Test
   fun testSingleSearchWordWithErrorCode() {
     doReturn(Single.error<Response<List<Word>>>(IllegalStateException()))
-      .whenever(mockDictionaryService).searchWord(any())
+      .whenever(mockDictionaryService).searchWord(any(), any())
     val observer = TestObserver<List<Word>>()
 
-    repository.singleSearchWord(TEST_SEARCH_TERM).subscribe(observer)
+    repository.singleSearchWord(TEST_TEST_LANGUAGE, TEST_SEARCH_TERM).subscribe(observer)
 
-    verify(mockDictionaryService).searchWord(TEST_SEARCH_TERM)
+    verify(mockDictionaryService).searchWord(TEST_TEST_LANGUAGE, TEST_SEARCH_TERM)
     observer.assertError { it is IllegalStateException }
   }
 
   @Test
   fun testSingleSearchWordWithNullBody() {
     doReturn(Single.just<Response<List<Word>>>(Response.success(null)))
-      .whenever(mockDictionaryService).searchWord(any())
+      .whenever(mockDictionaryService).searchWord(any(), any())
     val observer = TestObserver<List<Word>>()
 
-    repository.singleSearchWord(TEST_SEARCH_TERM).subscribe(observer)
+    repository.singleSearchWord(TEST_TEST_LANGUAGE, TEST_SEARCH_TERM).subscribe(observer)
 
-    verify(mockDictionaryService).searchWord(TEST_SEARCH_TERM)
+    verify(mockDictionaryService).searchWord(TEST_TEST_LANGUAGE, TEST_SEARCH_TERM)
     observer.assertError { it is IllegalStateException && it.message == ERROR_SEARCHING_FOR_WORD }
   }
 
   private companion object {
     private const val TEST_SEARCH_TERM = "palabra"
+    private const val TEST_TEST_LANGUAGE = "lenguaje"
   }
 }

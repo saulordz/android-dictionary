@@ -30,7 +30,9 @@ class HomePresenterTest {
     on { actionId } doReturn EditorInfo.IME_ACTION_SEARCH
   }
 
-  private val mockView = mock<HomeContract.View>()
+  private val mockView = mock<HomeContract.View> {
+    on { languageSelectionStates } doReturn listOf(mockLanguageSelectionState)
+  }
 
   private val presenter = HomePresenter(schedulerComposer, mockGoogleDictionaryRepository, mockSharedPreferencesRepository)
 
@@ -76,16 +78,17 @@ class HomePresenterTest {
 
   @Test
   fun testRegisterSearchEditorActionObservableSuccess() {
-    doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any())
+    doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any(), any())
     doReturn(TEST_SEARCH_TERM).whenever(mockView).searchTerm
     val clickObservable = Observable.just(mockTextViewEditorActionEvent)
 
     presenter.registerSearchEditorActionEvent(clickObservable)
 
-    verify(mockGoogleDictionaryRepository).singleSearchWord(TEST_SEARCH_TERM)
+    verify(mockGoogleDictionaryRepository).singleSearchWord(Language.SPANISH.languageTag, TEST_SEARCH_TERM)
     verify(mockTextViewEditorActionEvent).actionId
     verify(mockView).hideKeyboard()
     verify(mockView).showProgress()
+    verify(mockView).languageSelectionStates
     verify(mockView).searchTerm
     verify(mockView).words = listOf(mockWord)
     verify(mockView).hideProgress()
@@ -94,15 +97,16 @@ class HomePresenterTest {
 
   @Test
   fun testRegisterSearchButtonObservableSuccess() {
-    doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any())
+    doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any(), any())
     doReturn(TEST_SEARCH_TERM).whenever(mockView).searchTerm
     val clickObservable = Observable.just(Unit)
 
     presenter.registerSearchButtonObservable(clickObservable)
 
-    verify(mockGoogleDictionaryRepository).singleSearchWord(TEST_SEARCH_TERM)
+    verify(mockGoogleDictionaryRepository).singleSearchWord(Language.SPANISH.languageTag, TEST_SEARCH_TERM)
     verify(mockView).hideKeyboard()
     verify(mockView).showProgress()
+    verify(mockView).languageSelectionStates
     verify(mockView).searchTerm
     verify(mockView).words = listOf(mockWord)
     verify(mockView).hideProgress()
@@ -116,25 +120,65 @@ class HomePresenterTest {
 
     presenter.registerSearchButtonObservable(clickObservable)
 
+    verify(mockView).languageSelectionStates
     verify(mockView).searchTerm
     verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository)
   }
 
   @Test
+  fun testSearchWithNullLanguageSelectionStates() {
+    doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any(), any())
+    doReturn(TEST_SEARCH_TERM).whenever(mockView).searchTerm
+    doReturn(null).whenever(mockView).languageSelectionStates
+    val clickObservable = Observable.just(Unit)
+
+    presenter.registerSearchButtonObservable(clickObservable)
+
+    verify(mockGoogleDictionaryRepository).singleSearchWord(Language.DEFAULT_LANGUAGE.languageTag, TEST_SEARCH_TERM)
+    verify(mockView).hideKeyboard()
+    verify(mockView).showProgress()
+    verify(mockView).languageSelectionStates
+    verify(mockView).searchTerm
+    verify(mockView).words = listOf(mockWord)
+    verify(mockView).hideProgress()
+    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository, mockWord)
+  }
+
+  @Test
+  fun testSearchWithNoLanguageStateSelectionSelected() {
+    doReturn(Single.just(listOf(mockWord))).whenever(mockGoogleDictionaryRepository).singleSearchWord(any(), any())
+    doReturn(TEST_SEARCH_TERM).whenever(mockView).searchTerm
+    doReturn(false).whenever(mockLanguageSelectionState).selected
+    val clickObservable = Observable.just(Unit)
+
+    presenter.registerSearchButtonObservable(clickObservable)
+
+    verify(mockGoogleDictionaryRepository).singleSearchWord(Language.DEFAULT_LANGUAGE.languageTag, TEST_SEARCH_TERM)
+    verify(mockView).hideKeyboard()
+    verify(mockView).showProgress()
+    verify(mockView).languageSelectionStates
+    verify(mockView).searchTerm
+    verify(mockView).words = listOf(mockWord)
+    verify(mockView).hideProgress()
+    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository, mockWord)
+  }
+
+  @Test
   fun testSearchWithError() {
     doReturn(Single.error<IllegalStateException>(IllegalStateException()))
-      .whenever(mockGoogleDictionaryRepository).singleSearchWord(any())
+      .whenever(mockGoogleDictionaryRepository).singleSearchWord(any(), any())
     doReturn(TEST_SEARCH_TERM).whenever(mockView).searchTerm
     val clickObservable = Observable.just(Unit)
 
     presenter.registerSearchButtonObservable(clickObservable)
 
-    verify(mockGoogleDictionaryRepository).singleSearchWord(TEST_SEARCH_TERM)
+    verify(mockGoogleDictionaryRepository).singleSearchWord(Language.SPANISH.languageTag, TEST_SEARCH_TERM)
     verify(mockView).hideKeyboard()
     verify(mockView).showProgress()
+    verify(mockView).languageSelectionStates
     verify(mockView).searchTerm
     verify(mockView).hideProgress()
-    verify(mockView).displayError()
+    verify(mockView).showDefinitionNotFoundError()
     verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository)
   }
 
@@ -168,19 +212,29 @@ class HomePresenterTest {
 
   @Test
   fun testHandleNewLanguageApplied() {
-    doReturn(listOf(mockLanguageSelectionState)).whenever(mockView).languageSelectionStates
-
     presenter.handleNewLanguageApplied()
 
     verify(mockSharedPreferencesRepository).saveUserPreferredLanguage(Language.SPANISH)
     verify(mockLanguageSelectionState).selected
     verify(mockLanguageSelectionState).language
     verify(mockView).languageSelectionStates
-    verify(mockView).applyNewLanguage(Language.SPANISH)
+    verify(mockView).recreateView()
+    verifyNoMoreInteractions(mockView, mockLanguageSelectionState, mockSharedPreferencesRepository)
+  }
+
+  @Test
+  fun testHandleNewLanguageAppliedWithError() {
+    doReturn(null).whenever(mockView).languageSelectionStates
+
+    presenter.handleNewLanguageApplied()
+
+    verify(mockView).languageSelectionStates
+    verify(mockView).showLanguageSelectionError()
     verifyNoMoreInteractions(mockView, mockLanguageSelectionState, mockSharedPreferencesRepository)
   }
 
   private companion object {
+    private const val TEST_SEARCH_LANGUAGE = "keyLanguage"
     private const val TEST_SEARCH_TERM = "keyword"
     private const val TEST_WORD = "wordddd"
   }

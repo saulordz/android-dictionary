@@ -8,6 +8,6 @@ import retrofit2.http.Path
 
 interface GoogleDictionaryService {
 
-  @GET("api/v1/entries/es/{searchTerm}")
-  fun searchWord(@Path(value = "searchTerm") searchTerm: String): Single<Response<List<Word>>>
+  @GET("api/v1/entries/{language}/{searchTerm}")
+  fun searchWord(@Path(value = "language") language: String, @Path(value = "searchTerm") searchTerm: String): Single<Response<List<Word>>>
 }

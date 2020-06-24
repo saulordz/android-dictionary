@@ -11,8 +11,8 @@ class GoogleDictionaryRepository @Inject constructor(
   private val googleDictionaryService: GoogleDictionaryService
 ) {
 
-  fun singleSearchWord(searchTerm: String): Single<List<Word>> =
-    googleDictionaryService.searchWord(searchTerm)
+  fun singleSearchWord(language: String, searchTerm: String): Single<List<Word>> =
+    googleDictionaryService.searchWord(language, searchTerm)
       .filter { it.isSuccessful && it.body() != null }
       .switchIfEmpty(Single.error(IllegalStateException(ERROR_SEARCHING_FOR_WORD)))
       .map { it.body()!! }

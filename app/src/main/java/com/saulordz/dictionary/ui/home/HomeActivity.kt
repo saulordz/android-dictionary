@@ -3,14 +3,12 @@ package com.saulordz.dictionary.ui.home
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import com.afollestad.materialdialogs.DialogCallback
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.editorActionEvents
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivity
-import com.saulordz.dictionary.data.model.Language
 import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.ui.home.dialog.LanguageDialogAdapter
@@ -79,8 +77,11 @@ class HomeActivity
     return super.onOptionsItemSelected(item)
   }
 
-  override fun displayError() =
-    showError(getString(R.string.search_error_searching, searchTerm))
+  override fun showDefinitionNotFoundError() =
+    showError(getString(R.string.word_not_found_error, searchTerm))
+
+  override fun showLanguageSelectionError() =
+    showError(getString(R.string.word_not_found_error))
 
   override fun showProgress() = a_home_spinner.makeVisible()
 
@@ -90,10 +91,6 @@ class HomeActivity
 
   override fun showLanguageSelector() =
     MaterialDialogHelper.showLanguagePickerDialog(this, onApplyLanguageListener, languageAdapter)
-
-  override fun applyNewLanguage(newLanguage: Language) {
-    Toast.makeText(this, getString(newLanguage.languageStringRes), Toast.LENGTH_SHORT).show()
-  }
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
