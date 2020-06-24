@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Meanings</string>
+
+    <string name="language_selection_error">Se produjo un error al seleccionar el nuevo idioma.</string>
+
+    <string name="message_about">¿Quiénes somos?</string>
+    <string name="message_apply">Aplicar</string>
+    <string name="message_cancel">Cancelar</string>
+    <string name="message_communicate">Comunícate</string>
+    <string name="message_english">Inglés</string>
+    <string name="message_feedback">Dános tu opinión</string>
+    <string name="message_language">Idioma</string>
+    <string name="message_rate_app">Califícanos!</string>
+    <string name="message_search">Buscar</string>
+    <string name="message_toolbar_close">Cerrar</string>
+    <string name="message_toolbar_open">Abrir</string>
+    <string name="message_select_language">Selecciona el idioma</string>
+    <string name="message_settings">Opciones</string>
+    <string name="message_spanish">Español</string>
+
+    <string name="word_not_found_error">No se encontraron definiciones para: %s</string>
+</resources>
