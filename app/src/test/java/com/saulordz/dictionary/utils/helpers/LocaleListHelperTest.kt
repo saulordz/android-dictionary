@@ -2,8 +2,8 @@ package com.saulordz.dictionary.utils.helpers
 
 import assertk.assertThat
 import com.saulordz.dictionary.base.BaseActivityTest
-import com.saulordz.dictionary.testUtils.hasLocale
-import com.saulordz.dictionary.testUtils.hasSameLocales
+import com.saulordz.dictionary.testUtils.extensions.hasLocale
+import com.saulordz.dictionary.testUtils.extensions.hasSameLocales
 import org.junit.Test
 import java.util.*
 

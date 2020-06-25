@@ -1,4 +1,4 @@
-package com.saulordz.dictionary.testUtils
+package com.saulordz.dictionary.testUtils.extensions
 
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView

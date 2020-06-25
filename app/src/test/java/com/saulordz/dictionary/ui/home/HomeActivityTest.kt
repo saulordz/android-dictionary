@@ -1,5 +1,6 @@
 package com.saulordz.dictionary.ui.home
 
+import android.content.Intent.ACTION_SENDTO
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -12,15 +13,17 @@ import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivityTest
 import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
-import com.saulordz.dictionary.testUtils.hasItemCount
-import com.saulordz.dictionary.testUtils.hasNegativeText
-import com.saulordz.dictionary.testUtils.hasPositiveText
-import com.saulordz.dictionary.testUtils.hasTitle
+import com.saulordz.dictionary.testUtils.extensions.*
+import com.saulordz.dictionary.testUtils.extensions.hasItemCount
+import com.saulordz.dictionary.testUtils.extensions.hasNegativeText
+import com.saulordz.dictionary.testUtils.extensions.hasPositiveText
+import com.saulordz.dictionary.testUtils.extensions.hasTitle
 import com.saulordz.dictionary.utils.extensions.makeGone
 import com.saulordz.dictionary.utils.extensions.makeVisible
 import kotlinx.android.synthetic.main.activity_home.*
 import org.junit.Test
 import org.mockito.Mock
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowAlertDialog
 
 
@@ -34,10 +37,7 @@ class HomeActivityTest : BaseActivityTest() {
 
   @Test
   fun testOnCreateInteractions() = letActivity<HomeActivity> {
-    verify(mockHomePresenter).attachView(it)
-    verify(mockHomePresenter).initialize()
-    verify(mockHomePresenter).registerSearchButtonObservable(any())
-    verify(mockHomePresenter).registerSearchEditorActionEvent(any())
+    verifyPresenterOnCreateInteractions(it)
     verifyNoMoreInteractions(mockHomePresenter)
   }
 
@@ -91,6 +91,7 @@ class HomeActivityTest : BaseActivityTest() {
     it.hideKeyboard()
 
     verify(mockInputMethodManager).hideSoftInputFromWindow(it.window.decorView.rootView.windowToken, 0)
+    verifyNoMoreInteractions(mockInputMethodManager)
   }
 
   @Test
@@ -100,6 +101,7 @@ class HomeActivityTest : BaseActivityTest() {
     it.onOptionsItemSelected(mockMenuItem)
 
     verify(mockInputMethodManager).hideSoftInputFromWindow(it.window.decorView.rootView.windowToken, 0)
+    verifyNoMoreInteractions(mockInputMethodManager)
   }
 
   @Test
@@ -122,29 +124,71 @@ class HomeActivityTest : BaseActivityTest() {
 
     it.onApplyLanguageListener.invoke(mockMaterialDialog)
 
+    verifyPresenterOnCreateInteractions(it)
     verify(mockHomePresenter).handleNewLanguageApplied()
+    verifyNoMoreInteractions(mockHomePresenter)
   }
 
   @Test
   fun testOnLanguageClickedListener() = letActivity<HomeActivity> {
     it.onLanguageClickedListener.invoke(mockLanguageSelectionState)
 
+    verifyPresenterOnCreateInteractions(it)
     verify(mockHomePresenter).handleLanguageClicked(mockLanguageSelectionState)
+    verifyNoMoreInteractions(mockHomePresenter)
   }
 
   @Test
-  fun testOnLanguageMenuItemSelected() = letActivity<HomeActivity> {
+  fun testLanguageMenuItemSelected() = letActivity<HomeActivity> {
     val mockMenuItem = mock<MenuItem> {
       on { itemId } doReturn R.id.m_main_language
     }
 
     it.onNavigationItemSelectedListener(mockMenuItem)
 
+    verifyPresenterOnCreateInteractions(it)
     verify(mockHomePresenter).handleLanguageMenuItemSelected()
+    verify(mockMenuItem).itemId
+    verifyNoMoreInteractions(mockHomePresenter, mockMenuItem)
+  }
+
+  @Test
+  fun testFeedbackMenuItemSelected() = letActivity<HomeActivity> {
+    val mockMenuItem = mock<MenuItem> {
+      on { itemId } doReturn R.id.m_main_feedback
+    }
+
+    it.onNavigationItemSelectedListener(mockMenuItem)
+
+    verifyPresenterOnCreateInteractions(it)
+    verify(mockHomePresenter).handleFeedbackMenuItemSelected()
+    verify(mockMenuItem).itemId
+    verifyNoMoreInteractions(mockHomePresenter, mockMenuItem)
+  }
+
+  @Test
+  fun testStartEmailIntent() = letActivity<HomeActivity> {
+    it.startEmailIntent(TEST_EMAIL, TEST_SUBJECT)
+
+    val intent = shadowOf(application).nextStartedActivity
+
+    assertThat(intent).hasAction(ACTION_SENDTO)
+    assertThat(intent).hasData(EXPECTED_EMAIL_URI)
+  }
+
+  private fun verifyPresenterOnCreateInteractions(view: HomeContract.View) {
+    verify(mockHomePresenter).attachView(view)
+    verify(mockHomePresenter).initialize()
+    verify(mockHomePresenter).registerSearchButtonObservable(any())
+    verify(mockHomePresenter).registerSearchEditorActionEvent(any())
   }
 
   private companion object {
     private const val TEST_SEARCH_TERM = "search_term"
     private const val TEST_WORD = "word"
+    private const val TEST_EMAIL = "em@i.l"
+    private const val TEST_SUBJECT = "sub_ject"
+
+    private val EXPECTED_EMAIL_URI = "mailto:$TEST_EMAIL?subject=$TEST_SUBJECT"
   }
 }

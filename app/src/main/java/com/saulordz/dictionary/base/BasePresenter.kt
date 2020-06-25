@@ -66,7 +66,10 @@ abstract class BasePresenter<V : BaseContract.View>(
       .subscribe({ ifViewAttached { onSuccess(it) } }) { onError(it) }
   }
 
-  private companion object {
+  internal companion object {
     private const val DEFAULT_ERROR_MESSAGE = "Unknown error"
+
+    internal const val FEEDBACK_EMAIL_ADDRESS = "saulordz.dev@gmail.com"
+    internal const val FEEDBACK_EMAIL_SUBJECT = "Feedback for Meanings App"
   }
 }
