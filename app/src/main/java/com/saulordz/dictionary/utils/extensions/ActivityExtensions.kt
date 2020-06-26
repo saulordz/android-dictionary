@@ -17,6 +17,12 @@ internal fun AppCompatActivity.hideInputKeyboard(inputMethodManager: InputMethod
   window.decorView.rootView.hideInputKeyboard(inputMethodManager)
 }
 
+internal fun AppCompatActivity.createBackToolbar() {
+  setSupportActionBar(i_main_toolbar)
+
+  supportActionBar?.setDisplayHomeAsUpEnabled(true)
+}
+
 internal fun AppCompatActivity.createDrawerToolbar() {
   setSupportActionBar(i_main_toolbar)
 

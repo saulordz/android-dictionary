@@ -55,6 +55,10 @@ class HomePresenter @Inject constructor(
     }
   }
 
+  override fun handleAboutMenuItemSelected() = ifViewAttached { view ->
+    view.startAboutActivity()
+  }
+
   private fun prepareSearch() = ifViewAttached { view ->
     val language = view.languageSelectionStates.getSelectedLanguage().languageTag
     val searchTerm = view.searchTerm

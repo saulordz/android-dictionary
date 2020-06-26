@@ -1,9 +1,11 @@
 package com.saulordz.dictionary.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.VisibleForTesting
+import androidx.core.view.GravityCompat
 import com.afollestad.materialdialogs.DialogCallback
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.editorActionEvents
@@ -11,6 +13,7 @@ import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivity
 import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
+import com.saulordz.dictionary.ui.about.AboutActivity
 import com.saulordz.dictionary.ui.home.dialog.LanguageDialogAdapter
 import com.saulordz.dictionary.ui.home.dialog.OnLanguageClickedListener
 import com.saulordz.dictionary.ui.home.recycler.word.WordAdapter
@@ -73,9 +76,9 @@ class HomeActivity
     presenter.initialize()
   }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+  override fun onHomePressed() {
     hideKeyboard()
-    return super.onOptionsItemSelected(item)
+    a_base_drawer.openDrawer(GravityCompat.START)
   }
 
   override fun showDefinitionNotFoundError() =
@@ -100,6 +103,11 @@ class HomeActivity
       .start()
   }
 
+  override fun startAboutActivity() {
+    val intent = Intent(this, AboutActivity::class.java)
+    startActivity(intent)
+  }
+
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
     presenter.registerSearchEditorActionEvent(a_home_search_input.editorActionEvents())
@@ -112,7 +120,7 @@ class HomeActivity
   private fun onNavigationItemSelected(item: MenuItem) =
     when (item.itemId) {
       R.id.m_main_language -> presenter.handleLanguageMenuItemSelected()
-      R.id.m_main_about -> Unit
+      R.id.m_main_about -> presenter.handleAboutMenuItemSelected()
       R.id.m_main_feedback -> presenter.handleFeedbackMenuItemSelected()
       R.id.m_main_rate_app -> Unit
       else -> Unit

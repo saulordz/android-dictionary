@@ -13,11 +13,8 @@ import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivityTest
 import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
-import com.saulordz.dictionary.testUtils.extensions.*
-import com.saulordz.dictionary.testUtils.extensions.hasItemCount
-import com.saulordz.dictionary.testUtils.extensions.hasNegativeText
-import com.saulordz.dictionary.testUtils.extensions.hasPositiveText
-import com.saulordz.dictionary.testUtils.extensions.hasTitle
+import com.saulordz.dictionary.testUtils.assertions.*
+import com.saulordz.dictionary.ui.about.AboutActivity
 import com.saulordz.dictionary.utils.extensions.makeGone
 import com.saulordz.dictionary.utils.extensions.makeVisible
 import kotlinx.android.synthetic.main.activity_home.*
@@ -25,6 +22,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowAlertDialog
+import kotlin.reflect.jvm.jvmName
 
 
 class HomeActivityTest : BaseActivityTest() {
@@ -32,13 +30,13 @@ class HomeActivityTest : BaseActivityTest() {
   private val mockWord = mock<Word>()
   private val mockLanguageSelectionState = mock<LanguageSelectionState>()
 
-  @Mock lateinit var mockHomePresenter: HomePresenter
+  @Mock lateinit var mockPresenter: HomePresenter
   @Mock lateinit var mockInputMethodManager: InputMethodManager
 
   @Test
   fun testOnCreateInteractions() = letActivity<HomeActivity> {
     verifyPresenterOnCreateInteractions(it)
-    verifyNoMoreInteractions(mockHomePresenter)
+    verifyNoMoreInteractions(mockPresenter)
   }
 
   @Test
@@ -95,10 +93,8 @@ class HomeActivityTest : BaseActivityTest() {
   }
 
   @Test
-  fun testOnOptionItemSelectedClosesKeyboard() = letActivity<HomeActivity> {
-    val mockMenuItem = mock<MenuItem>()
-
-    it.onOptionsItemSelected(mockMenuItem)
+  fun testOnHomePressedClosesKeyboard() = letActivity<HomeActivity> {
+    it.onHomePressed()
 
     verify(mockInputMethodManager).hideSoftInputFromWindow(it.window.decorView.rootView.windowToken, 0)
     verifyNoMoreInteractions(mockInputMethodManager)
@@ -125,8 +121,8 @@ class HomeActivityTest : BaseActivityTest() {
     it.onApplyLanguageListener.invoke(mockMaterialDialog)
 
     verifyPresenterOnCreateInteractions(it)
-    verify(mockHomePresenter).handleNewLanguageApplied()
-    verifyNoMoreInteractions(mockHomePresenter)
+    verify(mockPresenter).handleNewLanguageApplied()
+    verifyNoMoreInteractions(mockPresenter)
   }
 
   @Test
@@ -134,8 +130,8 @@ class HomeActivityTest : BaseActivityTest() {
     it.onLanguageClickedListener.invoke(mockLanguageSelectionState)
 
     verifyPresenterOnCreateInteractions(it)
-    verify(mockHomePresenter).handleLanguageClicked(mockLanguageSelectionState)
-    verifyNoMoreInteractions(mockHomePresenter)
+    verify(mockPresenter).handleLanguageClicked(mockLanguageSelectionState)
+    verifyNoMoreInteractions(mockPresenter)
   }
 
   @Test
@@ -147,9 +143,23 @@ class HomeActivityTest : BaseActivityTest() {
     it.onNavigationItemSelectedListener(mockMenuItem)
 
     verifyPresenterOnCreateInteractions(it)
-    verify(mockHomePresenter).handleLanguageMenuItemSelected()
+    verify(mockPresenter).handleLanguageMenuItemSelected()
     verify(mockMenuItem).itemId
-    verifyNoMoreInteractions(mockHomePresenter, mockMenuItem)
+    verifyNoMoreInteractions(mockPresenter, mockMenuItem)
+  }
+
+  @Test
+  fun testAboutMenuItemSelected() = letActivity<HomeActivity> {
+    val mockMenuItem = mock<MenuItem> {
+      on { itemId } doReturn R.id.m_main_about
+    }
+
+    it.onNavigationItemSelectedListener(mockMenuItem)
+
+    verifyPresenterOnCreateInteractions(it)
+    verify(mockPresenter).handleAboutMenuItemSelected()
+    verify(mockMenuItem).itemId
+    verifyNoMoreInteractions(mockPresenter, mockMenuItem)
   }
 
   @Test
@@ -161,9 +171,9 @@ class HomeActivityTest : BaseActivityTest() {
     it.onNavigationItemSelectedListener(mockMenuItem)
 
     verifyPresenterOnCreateInteractions(it)
-    verify(mockHomePresenter).handleFeedbackMenuItemSelected()
+    verify(mockPresenter).handleFeedbackMenuItemSelected()
     verify(mockMenuItem).itemId
-    verifyNoMoreInteractions(mockHomePresenter, mockMenuItem)
+    verifyNoMoreInteractions(mockPresenter, mockMenuItem)
   }
 
   @Test
@@ -176,11 +186,20 @@ class HomeActivityTest : BaseActivityTest() {
     assertThat(intent).hasData(EXPECTED_EMAIL_URI)
   }
 
+  @Test
+  fun testStartAboutActivity() = letActivity<HomeActivity> {
+    it.startAboutActivity()
+
+    val intent = shadowOf(application).nextStartedActivity
+
+    assertThat(intent).hasComponentClass(AboutActivity::class.jvmName)
+  }
+
   private fun verifyPresenterOnCreateInteractions(view: HomeContract.View) {
-    verify(mockHomePresenter).attachView(view)
-    verify(mockHomePresenter).initialize()
-    verify(mockHomePresenter).registerSearchButtonObservable(any())
-    verify(mockHomePresenter).registerSearchEditorActionEvent(any())
+    verify(mockPresenter).attachView(view)
+    verify(mockPresenter).initialize()
+    verify(mockPresenter).registerSearchButtonObservable(any())
+    verify(mockPresenter).registerSearchEditorActionEvent(any())
   }
 
   private companion object {

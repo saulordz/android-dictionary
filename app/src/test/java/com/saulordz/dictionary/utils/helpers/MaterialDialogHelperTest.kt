@@ -7,11 +7,11 @@ import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivityTest
-import com.saulordz.dictionary.testUtils.extensions.*
-import com.saulordz.dictionary.testUtils.extensions.hasAdapter
-import com.saulordz.dictionary.testUtils.extensions.hasNegativeText
-import com.saulordz.dictionary.testUtils.extensions.hasPositiveText
-import com.saulordz.dictionary.testUtils.extensions.hasTitle
+import com.saulordz.dictionary.testUtils.assertions.*
+import com.saulordz.dictionary.testUtils.assertions.hasAdapter
+import com.saulordz.dictionary.testUtils.assertions.hasNegativeText
+import com.saulordz.dictionary.testUtils.assertions.hasPositiveText
+import com.saulordz.dictionary.testUtils.assertions.hasTitle
 import com.saulordz.dictionary.ui.home.dialog.LanguageDialogAdapter
 import com.saulordz.dictionary.utils.extensions.performPositiveClick
 import org.junit.Test

@@ -21,15 +21,17 @@ interface HomeContract {
     fun hideKeyboard()
     fun showLanguageSelector()
     fun startEmailIntent(recipient: String, subject: String)
+    fun startAboutActivity()
   }
 
   interface Presenter : BaseContract.Presenter<View> {
     fun initialize()
     fun registerSearchButtonObservable(observable: Observable<Unit>)
     fun registerSearchEditorActionEvent(observable: Observable<TextViewEditorActionEvent>)
-    fun handleLanguageMenuItemSelected()
-    fun handleFeedbackMenuItemSelected()
     fun handleLanguageClicked(clickedLanguage: LanguageSelectionState?)
     fun handleNewLanguageApplied()
+    fun handleLanguageMenuItemSelected()
+    fun handleFeedbackMenuItemSelected()
+    fun handleAboutMenuItemSelected()
   }
 }

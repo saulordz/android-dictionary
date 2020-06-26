@@ -15,4 +15,21 @@
         <item name="android:layout_width">wrap_content</item>
     </style>
 
+    <style name="AppTheme.Title" parent="AppTheme">
+        <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppTheme.Subtitle" parent="AppTheme">
+        <item name="android:textSize">@dimen/text_size_subtitle</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppTheme.Tag" parent="AppTheme">
+        <item name="android:textSize">@dimen/text_size_tag</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
 </resources>
