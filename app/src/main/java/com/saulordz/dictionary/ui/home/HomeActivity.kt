@@ -1,6 +1,7 @@
 package com.saulordz.dictionary.ui.home
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.include_main_navigation_drawer.*
 import toothpick.Scope
 import javax.inject.Inject
+
 
 class HomeActivity
   : BaseActivity<HomeContract.View, HomeContract.Presenter>(),
@@ -108,6 +110,12 @@ class HomeActivity
     startActivity(intent)
   }
 
+  override fun startPlayStoreIntent() {
+    val uri = Uri.parse(PLAY_STORE_BASE_URL + packageName)
+    val playStoreIntent = Intent(Intent.ACTION_VIEW, uri)
+    startActivity(playStoreIntent)
+  }
+
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
     presenter.registerSearchEditorActionEvent(a_home_search_input.editorActionEvents())
@@ -122,7 +130,11 @@ class HomeActivity
       R.id.m_main_language -> presenter.handleLanguageMenuItemSelected()
       R.id.m_main_about -> presenter.handleAboutMenuItemSelected()
       R.id.m_main_feedback -> presenter.handleFeedbackMenuItemSelected()
-      R.id.m_main_rate_app -> Unit
+      R.id.m_main_rate_app -> presenter.handleRateMenuItemSelected()
       else -> Unit
     }
+
+  internal companion object {
+    internal const val PLAY_STORE_BASE_URL = "market://details?id="
+  }
 }

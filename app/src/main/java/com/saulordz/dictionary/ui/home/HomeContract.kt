@@ -22,6 +22,7 @@ interface HomeContract {
     fun showLanguageSelector()
     fun startEmailIntent(recipient: String, subject: String)
     fun startAboutActivity()
+    fun startPlayStoreIntent()
   }
 
   interface Presenter : BaseContract.Presenter<View> {
@@ -31,7 +32,8 @@ interface HomeContract {
     fun handleLanguageClicked(clickedLanguage: LanguageSelectionState?)
     fun handleNewLanguageApplied()
     fun handleLanguageMenuItemSelected()
-    fun handleFeedbackMenuItemSelected()
     fun handleAboutMenuItemSelected()
+    fun handleFeedbackMenuItemSelected()
+    fun handleRateMenuItemSelected()
   }
 }

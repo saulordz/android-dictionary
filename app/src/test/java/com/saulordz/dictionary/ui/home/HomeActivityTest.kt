@@ -1,6 +1,7 @@
 package com.saulordz.dictionary.ui.home
 
 import android.content.Intent.ACTION_SENDTO
+import android.content.Intent.ACTION_VIEW
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -163,6 +164,20 @@ class HomeActivityTest : BaseActivityTest() {
   }
 
   @Test
+  fun testRateMenuItemSelected() = letActivity<HomeActivity> {
+    val mockMenuItem = mock<MenuItem> {
+      on { itemId } doReturn R.id.m_main_rate_app
+    }
+
+    it.onNavigationItemSelectedListener(mockMenuItem)
+
+    verifyPresenterOnCreateInteractions(it)
+    verify(mockPresenter).handleRateMenuItemSelected()
+    verify(mockMenuItem).itemId
+    verifyNoMoreInteractions(mockPresenter, mockMenuItem)
+  }
+
+  @Test
   fun testFeedbackMenuItemSelected() = letActivity<HomeActivity> {
     val mockMenuItem = mock<MenuItem> {
       on { itemId } doReturn R.id.m_main_feedback
@@ -187,6 +202,17 @@ class HomeActivityTest : BaseActivityTest() {
   }
 
   @Test
+  fun testStartPlayStoreIntent() = letActivity<HomeActivity> {
+    val expectedUri = HomeActivity.PLAY_STORE_BASE_URL + application.packageName
+    it.startPlayStoreIntent()
+
+    val intent = shadowOf(application).nextStartedActivity
+
+    assertThat(intent).hasAction(ACTION_VIEW)
+    assertThat(intent).hasData(expectedUri)
+  }
+
+  @Test
   fun testStartAboutActivity() = letActivity<HomeActivity> {
     it.startAboutActivity()
 
@@ -208,6 +234,6 @@ class HomeActivityTest : BaseActivityTest() {
     private const val TEST_EMAIL = "em@i.l"
     private const val TEST_SUBJECT = "sub_ject"
 
-    private val EXPECTED_EMAIL_URI = "mailto:$TEST_EMAIL?subject=$TEST_SUBJECT"
+    private const val EXPECTED_EMAIL_URI = "mailto:$TEST_EMAIL?subject=$TEST_SUBJECT"
   }
 }
