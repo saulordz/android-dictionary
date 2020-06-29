@@ -8,7 +8,7 @@ import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.data.repository.GoogleDictionaryRepository
 import com.saulordz.dictionary.data.repository.SharedPreferencesRepository
-import com.saulordz.dictionary.testUtils.RxTestUtils.schedulerComposer
+import com.saulordz.dictionary.testUtils.RxTestUtils.testSchedulerComposer
 import com.saulordz.dictionary.ui.home.dialog.LanguageSelectionStateMapper
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -34,7 +34,7 @@ class HomePresenterTest {
     on { languageSelectionStates } doReturn listOf(mockLanguageSelectionState)
   }
 
-  private val presenter = HomePresenter(schedulerComposer, mockGoogleDictionaryRepository, mockSharedPreferencesRepository)
+  private val presenter = HomePresenter(testSchedulerComposer, mockGoogleDictionaryRepository, mockSharedPreferencesRepository)
 
   @Before
   fun setUp() {

@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.os.LocaleList
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.core.view.GravityCompat
 import com.hannesdorfmann.mosby3.mvp.MvpActivity
 import com.saulordz.dictionary.DictionaryApplication
 import com.saulordz.dictionary.di.Scopes
 import com.saulordz.dictionary.utils.extensions.closeDrawer
 import com.saulordz.dictionary.utils.extensions.isDrawerOpen
 import com.saulordz.dictionary.utils.extensions.orFalse
-import kotlinx.android.synthetic.main.activity_home.*
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieActivityModule
@@ -38,7 +36,7 @@ abstract class BaseActivity<V : BaseContract.View, P : BaseContract.Presenter<V>
 
   override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
     android.R.id.home -> {
-      a_base_drawer.openDrawer(GravityCompat.START)
+      onHomePressed()
       true
     }
     else -> super.onOptionsItemSelected(item)
@@ -68,6 +66,8 @@ abstract class BaseActivity<V : BaseContract.View, P : BaseContract.Presenter<V>
   }
 
   override fun recreateView() = recreate()
+
+  open fun onHomePressed() = onBackPressed()
 
   abstract fun addModules(scope: Scope): Scope
 

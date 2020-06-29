@@ -12,8 +12,16 @@ internal fun TextView.setTextAndVisibility(newText: String?) = if (newText != nu
   makeGone()
 }
 
-internal fun TextView.setTextAndVisibility(@StringRes stringResId: Int?) = if (stringResId != null && stringResId != 0) {
-  setTextAndVisibility(context.getString(stringResId))
-} else {
-  makeGone()
-}
+internal fun TextView.setTextAndVisibility(@StringRes stringResId: Int?, vararg formatArgs: Any?) =
+  if (stringResId != null && stringResId != 0 && formatArgs.all { it != null }) {
+    setTextAndVisibility(context.getString(stringResId, *formatArgs))
+  } else {
+    makeGone()
+  }
+
+internal fun TextView.setTextAndVisibility(@StringRes stringResId: Int?) =
+  if (stringResId != null && stringResId != 0) {
+    setTextAndVisibility(context.getString(stringResId))
+  } else {
+    makeGone()
+  }

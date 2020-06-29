@@ -7,6 +7,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import com.saulordz.dictionary.R
 import com.saulordz.dictionary.base.BaseActivityTest
+import com.saulordz.dictionary.testUtils.assertions.hasText
+import com.saulordz.dictionary.testUtils.assertions.isGone
+import com.saulordz.dictionary.testUtils.assertions.isVisible
 import org.junit.Test
 
 class TextViewExtensionsTest : BaseActivityTest() {
@@ -21,8 +24,8 @@ class TextViewExtensionsTest : BaseActivityTest() {
 
     textView.setTextAndVisibility(nullString)
 
-    assertThat(textView.text).isEqualTo(TEST_STRING)
-    assertThat(textView.visibility).isEqualTo(View.GONE)
+    assertThat(textView).hasText(TEST_STRING)
+    assertThat(textView).isGone()
   }
 
   @Test
@@ -32,8 +35,8 @@ class TextViewExtensionsTest : BaseActivityTest() {
 
     textView.setTextAndVisibility(TEST_STRING)
 
-    assertThat(textView.text).isEqualTo(TEST_STRING)
-    assertThat(textView.visibility).isEqualTo(View.VISIBLE)
+    assertThat(textView).hasText(TEST_STRING)
+    assertThat(textView).isVisible()
   }
 
   @Test
@@ -43,8 +46,8 @@ class TextViewExtensionsTest : BaseActivityTest() {
 
     textView.setTextAndVisibility(R.string.app_name)
 
-    assertThat(textView.text).isEqualTo(application.getString(R.string.app_name))
-    assertThat(textView.visibility).isEqualTo(View.VISIBLE)
+    assertThat(textView).hasText(R.string.app_name)
+    assertThat(textView).isVisible()
   }
 
   @Test
@@ -55,8 +58,8 @@ class TextViewExtensionsTest : BaseActivityTest() {
 
     textView.setTextAndVisibility(nullResourceId)
 
-    assertThat(textView.text).isEqualTo(TEST_STRING)
-    assertThat(textView.visibility).isEqualTo(View.GONE)
+    assertThat(textView).hasText(TEST_STRING)
+    assertThat(textView).isGone()
   }
 
   @Test
@@ -67,8 +70,31 @@ class TextViewExtensionsTest : BaseActivityTest() {
 
     textView.setTextAndVisibility(nullResourceId)
 
-    assertThat(textView.text).isEqualTo(TEST_STRING)
-    assertThat(textView.visibility).isEqualTo(View.GONE)
+    assertThat(textView).hasText(TEST_STRING)
+    assertThat(textView).isGone()
+  }
+
+  @Test
+  fun testSetTextAndVisibilityWithValidFormatArg() {
+    textView.makeVisible()
+    textView.text = ""
+
+    textView.setTextAndVisibility(R.string.message_version, TEST_FORMAT_ARG)
+
+    assertThat(textView).hasText(R.string.message_version, TEST_FORMAT_ARG)
+    assertThat(textView).isVisible()
+  }
+
+  @Test
+  fun testSetTextAndVisibilityWithNullFormatArg() {
+    val nullVarArg = null
+    textView.makeVisible()
+    textView.text = TEST_STRING
+
+    textView.setTextAndVisibility(R.string.app_name, nullVarArg, "other arg")
+
+    assertThat(textView).hasText(TEST_STRING)
+    assertThat(textView).isGone()
   }
 
   @Test
@@ -83,5 +109,6 @@ class TextViewExtensionsTest : BaseActivityTest() {
 
   private companion object {
     private const val TEST_STRING = "stringtst"
+    private const val TEST_FORMAT_ARG = "imaformat"
   }
 }

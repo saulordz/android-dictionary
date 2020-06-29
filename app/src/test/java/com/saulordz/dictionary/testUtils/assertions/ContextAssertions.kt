@@ -1,4 +1,4 @@
-package com.saulordz.dictionary.testUtils.extensions
+package com.saulordz.dictionary.testUtils.assertions
 
 import android.content.Context
 import assertk.Assert
