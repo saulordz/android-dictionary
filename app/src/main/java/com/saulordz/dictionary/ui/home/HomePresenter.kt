@@ -36,6 +36,10 @@ class HomePresenter @Inject constructor(
     view.showLanguageSelector()
   }
 
+  override fun handleFeedbackMenuItemSelected() = ifViewAttached { view ->
+    view.startEmailIntent(FEEDBACK_EMAIL_ADDRESS, FEEDBACK_EMAIL_SUBJECT)
+  }
+
   override fun handleLanguageClicked(clickedLanguage: LanguageSelectionState?) = ifViewAttached { view ->
     if (clickedLanguage != null) {
       view.languageSelectionStates = LanguageSelectionStateMapper(clickedLanguage.language)

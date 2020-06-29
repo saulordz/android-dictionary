@@ -31,6 +31,7 @@ ext {
     androidxTestCoreVersion = '1.0.0'
     appcompatVersion = '1.1.0'
     assertkVersion = '0.22'
+    emailIntentBuilderVersion = '2.0.0'
     legacySupportVersion = '1.0.0'
     materialVersion = '1.1.0'
     materialDialogVersion = '3.2.1'

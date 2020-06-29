@@ -16,6 +16,7 @@ import com.saulordz.dictionary.ui.home.dialog.OnLanguageClickedListener
 import com.saulordz.dictionary.ui.home.recycler.word.WordAdapter
 import com.saulordz.dictionary.utils.extensions.*
 import com.saulordz.dictionary.utils.helpers.MaterialDialogHelper
+import de.cketti.mailto.EmailIntentBuilder
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.include_main_navigation_drawer.*
 import toothpick.Scope
@@ -92,6 +93,13 @@ class HomeActivity
   override fun showLanguageSelector() =
     MaterialDialogHelper.showLanguagePickerDialog(this, onApplyLanguageListener, languageAdapter)
 
+  override fun startEmailIntent(recipient: String, subject: String) {
+    EmailIntentBuilder.from(this)
+      .to(recipient)
+      .subject(subject)
+      .start()
+  }
+
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())
     presenter.registerSearchEditorActionEvent(a_home_search_input.editorActionEvents())
@@ -105,7 +113,7 @@ class HomeActivity
     when (item.itemId) {
       R.id.m_main_language -> presenter.handleLanguageMenuItemSelected()
       R.id.m_main_about -> Unit
-      R.id.m_main_feedback -> Unit
+      R.id.m_main_feedback -> presenter.handleFeedbackMenuItemSelected()
       R.id.m_main_rate_app -> Unit
       else -> Unit
     }
