@@ -233,6 +233,14 @@ class HomePresenterTest {
     verifyNoMoreInteractions(mockView, mockLanguageSelectionState, mockSharedPreferencesRepository)
   }
 
+  @Test
+  fun testHandleRateMenuItemSelected() {
+    presenter.handleRateMenuItemSelected()
+
+    verify(mockView).startPlayStoreIntent()
+    verifyNoMoreInteractions(mockView)
+  }
+
   private companion object {
     private const val TEST_SEARCH_LANGUAGE = "keyLanguage"
     private const val TEST_SEARCH_TERM = "keyword"
