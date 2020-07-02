@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
-import com.saulordz.dictionary.DictionaryApplication
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -17,13 +16,17 @@ import toothpick.Toothpick
 import toothpick.testing.ToothPickRule
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [Build.VERSION_CODES.O_MR1])
+@Config(
+  application = TestDictionaryApplication::class,
+  sdk = [Build.VERSION_CODES.O_MR1]
+)
 abstract class BaseActivityTest {
 
   @Rule @JvmField val mockitoRule = MockitoJUnit.rule()
   @Rule @JvmField val toothpickRule: ToothPickRule = ToothPickRule(this)
 
-  val application = ApplicationProvider.getApplicationContext<DictionaryApplication>()
+  val application: TestDictionaryApplication
+    get() = ApplicationProvider.getApplicationContext()
 
   @Before
   fun setUp() {

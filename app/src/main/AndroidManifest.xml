@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.saulordz.dictionary">
 
-    <uses-sdk android:targetSdkVersion="29" />
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -25,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.about.AboutActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
     </application>
 
 </manifest>

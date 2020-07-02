@@ -1,23 +1,30 @@
 package com.saulordz.dictionary.base
 
+import android.content.Context
 import android.os.Bundle
+import android.os.LocaleList
+import android.view.MenuItem
 import android.widget.Toast
 import com.hannesdorfmann.mosby3.mvp.MvpActivity
-import com.hannesdorfmann.mosby3.mvp.MvpPresenter
-import com.hannesdorfmann.mosby3.mvp.MvpView
+import com.saulordz.dictionary.DictionaryApplication
 import com.saulordz.dictionary.di.Scopes
+import com.saulordz.dictionary.utils.extensions.closeDrawer
+import com.saulordz.dictionary.utils.extensions.isDrawerOpen
+import com.saulordz.dictionary.utils.extensions.orFalse
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieActivityModule
 
 
-abstract class BaseActivity<V : MvpView, P : MvpPresenter<V>> :
-  MvpActivity<V, P>(), MvpView {
+abstract class BaseActivity<V : BaseContract.View, P : BaseContract.Presenter<V>> :
+  MvpActivity<V, P>(), BaseContract.View {
 
   private lateinit var scope: Scope
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    initializeToothpick()
+    if (!isApplicationContext()) {
+      initializeToothpick()
+    }
     super.onCreate(savedInstanceState)
   }
 
@@ -26,6 +33,41 @@ abstract class BaseActivity<V : MvpView, P : MvpPresenter<V>> :
 
     super.onDestroy()
   }
+
+  override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+    android.R.id.home -> {
+      onHomePressed()
+      true
+    }
+    else -> super.onOptionsItemSelected(item)
+  }
+
+  override fun onBackPressed() {
+    if (isDrawerOpen) {
+      closeDrawer()
+    } else {
+      super.onBackPressed()
+    }
+  }
+
+  override fun onStop() {
+    super.onStop()
+    closeDrawer()
+  }
+
+  override fun attachBaseContext(newBase: Context?) {
+    val customContext = if (newBase.isApplicationContext()) {
+      initializeToothpick()
+      createCustomContext(newBase)
+    } else {
+      newBase
+    }
+    super.attachBaseContext(customContext)
+  }
+
+  override fun recreateView() = recreate()
+
+  open fun onHomePressed() = onBackPressed()
 
   abstract fun addModules(scope: Scope): Scope
 
@@ -36,8 +78,17 @@ abstract class BaseActivity<V : MvpView, P : MvpPresenter<V>> :
     Toothpick.inject(this, scope)
   }
 
+  private fun createCustomContext(context: Context?): Context? {
+    val customContext = createPresenter().createCustomContext(context)
+    val customLocales = customContext?.resources?.configuration?.locales
+    customLocales?.let { LocaleList.setDefault(it) }
+    return customContext
+  }
+
   internal open fun showError(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
   }
 
+  private fun Context?.isApplicationContext() =
+    this?.applicationContext?.javaClass?.isAssignableFrom(DictionaryApplication::class.java).orFalse()
 }

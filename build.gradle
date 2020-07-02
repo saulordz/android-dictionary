@@ -8,7 +8,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath 'com.android.tools.build:gradle:4.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -20,7 +20,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-
     }
 }
 
@@ -32,11 +31,14 @@ ext {
     androidxTestCoreVersion = '1.0.0'
     appcompatVersion = '1.1.0'
     assertkVersion = '0.22'
+    emailIntentBuilderVersion = '2.0.0'
     legacySupportVersion = '1.0.0'
     materialVersion = '1.1.0'
+    materialDialogVersion = '3.2.1'
     mockitoKotlinVersion = '1.6.0'
     mosbyVersion = '3.1.1'
     moshiVersion = '1.8.0'
+    objectPreferenceVersion = '0.1.6'
     okHttpVersion = '4.7.2'
     rxAndroidVersion = '2.1.1'
     rxBindingVersion = '3.1.0'

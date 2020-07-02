@@ -1,4 +1,4 @@
-package com.saulordz.dictionary.ui.home.recycler
+package com.saulordz.dictionary.ui.home.recycler.definition
 
 import android.widget.FrameLayout
 import assertk.assertThat

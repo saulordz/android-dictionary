@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/message_settings">
+        <menu>
+            <item
+                android:id="@+id/m_main_language"
+                android:icon="@drawable/icon_language"
+                android:title="@string/message_language" />
+        </menu>
+    </item>
+
+    <item android:title="@string/message_communicate">
+        <menu>
+            <item
+                android:id="@+id/m_main_about"
+                android:icon="@drawable/icon_about"
+                android:title="@string/message_about_app" />
+            <item
+                android:id="@+id/m_main_feedback"
+                android:icon="@drawable/icon_feedback"
+                android:title="@string/message_feedback" />
+            <item
+                android:id="@+id/m_main_rate_app"
+                android:icon="@drawable/icon_rate"
+                android:title="@string/message_rate_app" />
+        </menu>
+    </item>
+</menu>
