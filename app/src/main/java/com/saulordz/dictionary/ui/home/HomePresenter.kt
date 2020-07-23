@@ -4,6 +4,7 @@ import com.jakewharton.rxbinding3.widget.TextViewEditorActionEvent
 import com.saulordz.dictionary.base.BasePresenter
 import com.saulordz.dictionary.data.model.Language
 import com.saulordz.dictionary.data.model.LanguageSelectionState
+import com.saulordz.dictionary.data.model.RecentSearch
 import com.saulordz.dictionary.data.model.Word
 import com.saulordz.dictionary.data.repository.GoogleDictionaryRepository
 import com.saulordz.dictionary.data.repository.SharedPreferencesRepository
@@ -19,9 +20,9 @@ class HomePresenter @Inject constructor(
   private val sharedPreferencesRepository: SharedPreferencesRepository
 ) : BasePresenter<HomeContract.View>(schedulerComposer, sharedPreferencesRepository), HomeContract.Presenter {
 
-  override fun initialize() = ifViewAttached { view ->
-    val userLanguage = sharedPreferencesRepository.getUserPreferredLanguage()
-    view.languageSelectionStates = LanguageSelectionStateMapper(userLanguage)
+  override fun initialize() {
+    loadUserLanguage()
+    loadRecentSearches()
   }
 
   override fun registerSearchEditorActionEvent(observable: Observable<TextViewEditorActionEvent>) = observable.onObservableSearchAction {
@@ -63,8 +64,37 @@ class HomePresenter @Inject constructor(
     view.startPlayStoreIntent()
   }
 
+  override fun handleRecentSearchClicked(recentSearch: RecentSearch?) {
+    val searchTerm = recentSearch?.searchTerm
+    val language = recentSearch?.language
+    val words = recentSearch?.words
+    if (searchTerm != null && language != null && words != null) {
+      onSearchSuccess(searchTerm, language, words)
+    }
+  }
+
+  override fun handleBackPressed() = ifViewAttached { view ->
+    when {
+      view.isMenuDisplayed -> view.hideMenu()
+      view.isDefinitionDisplayed -> showRecentSearches()
+      else -> view.exit()
+    }
+  }
+
+  override fun handleHomePressed() = ifViewAttached { view ->
+    when {
+      view.isDefinitionDisplayed -> showRecentSearches()
+      else -> view.showMenu()
+    }
+  }
+
+  private fun showRecentSearches() = ifViewAttached { view ->
+    view.words = null
+    view.showRecentSearches()
+  }
+
   private fun prepareSearch() = ifViewAttached { view ->
-    val language = view.languageSelectionStates.getSelectedLanguage().languageTag
+    val language = view.languageSelectionStates.getSelectedLanguage()
     val searchTerm = view.searchTerm
     if (searchTerm.isNotBlank()) {
       view.hideKeyboard()
@@ -73,21 +103,43 @@ class HomePresenter @Inject constructor(
     }
   }
 
-  private fun search(language: String, searchTerm: String) = addDisposable {
-    googleDictionaryRepository.singleSearchWord(language, searchTerm)
+  private fun search(language: Language, searchTerm: String) = addDisposable {
+    googleDictionaryRepository.singleSearchWord(language.languageTag, searchTerm)
       .compose(schedulerComposer.singleComposer())
-      .subscribe(::onSearchSuccess) { onError(it) }
+      .subscribe({ onSearchSuccess(searchTerm, language, it) }) { onError(it) }
+  }
+
+  private fun onSearchSuccess(searchTerm: String, language: Language, words: List<Word>) {
+    saveSearch(searchTerm, language, words)
+    handleSearchResults(words)
+  }
+
+  private fun saveSearch(searchTerm: String, language: Language, words: List<Word>) = ifViewAttached { view ->
+    val recentSearch = RecentSearch(searchTerm, language, words)
+    sharedPreferencesRepository.addRecentSearch(recentSearch)
+  }
+
+  private fun handleSearchResults(words: List<Word>) = ifViewAttached { view ->
+    view.words = words
+    view.showBackMenu()
+    view.showSearchResults()
+    view.hideProgress()
+    loadRecentSearches()
+  }
+
+  private fun loadRecentSearches() = ifViewAttached { view ->
+    view.recentSearches = sharedPreferencesRepository.getRecentSearches()
+  }
+
+  private fun loadUserLanguage() = ifViewAttached { view ->
+    val userLanguage = sharedPreferencesRepository.getUserPreferredLanguage()
+    view.languageSelectionStates = LanguageSelectionStateMapper(userLanguage)
   }
 
   override fun onError(throwable: Throwable?, message: String) = ifViewAttached { view ->
-    super.onError(throwable, message)
     view.hideProgress()
     view.showDefinitionNotFoundError()
-  }
-
-  private fun onSearchSuccess(words: List<Word>) = ifViewAttached { view ->
-    view.hideProgress()
-    view.words = words
+    super.onError(throwable, message)
   }
 
   private fun Iterable<LanguageSelectionState>?.getSelectedLanguage() =

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/i_recent_search"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_recent_search_height"
+    android:layout_margin="@dimen/margin_standard_horizontal"
+    android:orientation="horizontal"
+    tools:context=".ui.home.HomeActivity">
+
+    <TextView
+        android:id="@+id/i_recent_search_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/i_recent_search_language"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/margin_standard_horizontal" />
+
+</LinearLayout>
