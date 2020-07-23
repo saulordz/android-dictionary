@@ -114,7 +114,7 @@ class HomePresenter @Inject constructor(
     handleSearchResults(words)
   }
 
-  private fun saveSearch(searchTerm: String, language: Language, words: List<Word>) = ifViewAttached { view ->
+  private fun saveSearch(searchTerm: String, language: Language, words: List<Word>) = ifViewAttached {
     val recentSearch = RecentSearch(searchTerm, language, words)
     sharedPreferencesRepository.addRecentSearch(recentSearch)
   }
