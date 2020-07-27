@@ -14,8 +14,6 @@ interface HomeContract {
     val isDefinitionDisplayed: Boolean
     val isMenuDisplayed: Boolean
 
-    var words: List<Word>?
-    var recentSearches: List<RecentSearch>?
     var languageSelectionStates: List<LanguageSelectionState>?
 
     fun exit()
@@ -33,6 +31,8 @@ interface HomeContract {
     fun startEmailIntent(recipient: String, subject: String)
     fun startAboutActivity()
     fun startPlayStoreIntent()
+    fun setWords(words: List<Word>?)
+    fun setRecentSearches(searches: List<RecentSearch>)
   }
 
   interface Presenter : BaseContract.Presenter<View> {

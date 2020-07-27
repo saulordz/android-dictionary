@@ -35,6 +35,8 @@ internal fun AppCompatActivity.createDrawerToolbar() {
   i_main_navigation.bringToFront()
 }
 
-internal fun AppCompatActivity.closeDrawer() {
-  a_base_drawer?.closeDrawer(GravityCompat.START)
-}
+internal fun AppCompatActivity.closeDrawer() =
+  a_base_drawer.closeDrawer(GravityCompat.START)
+
+internal fun AppCompatActivity.openDrawer() =
+  a_base_drawer.openDrawer(GravityCompat.START)

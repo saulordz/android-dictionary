@@ -3,6 +3,8 @@ package com.saulordz.dictionary.ui.home
 import android.view.inputmethod.EditorInfo
 import com.jakewharton.rxbinding3.widget.TextViewEditorActionEvent
 import com.nhaarman.mockito_kotlin.*
+import com.saulordz.dictionary.base.BasePresenter.Companion.FEEDBACK_EMAIL_ADDRESS
+import com.saulordz.dictionary.base.BasePresenter.Companion.FEEDBACK_EMAIL_SUBJECT
 import com.saulordz.dictionary.data.model.Language
 import com.saulordz.dictionary.data.model.LanguageSelectionState
 import com.saulordz.dictionary.data.model.RecentSearch
@@ -55,8 +57,8 @@ class HomePresenterTest {
     verify(mockSharedPreferencesRepository).getUserPreferredLanguage()
     verify(mockSharedPreferencesRepository).getRecentSearches()
     verify(mockView).languageSelectionStates = expectedLanguageSelectionStateList
-    verify(mockView).recentSearches = listOf(mockRecentSearch)
-    verifyNoMoreInteractions(mockView, mockSharedPreferencesRepository)
+    verify(mockView).setRecentSearches(listOf(mockRecentSearch))
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -69,8 +71,8 @@ class HomePresenterTest {
     verify(mockSharedPreferencesRepository).getUserPreferredLanguage()
     verify(mockSharedPreferencesRepository).getRecentSearches()
     verify(mockView).languageSelectionStates = expectedLanguageSelectionStateList
-    verify(mockView).recentSearches = listOf(mockRecentSearch)
-    verifyNoMoreInteractions(mockView, mockSharedPreferencesRepository)
+    verify(mockView).setRecentSearches(listOf(mockRecentSearch))
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -81,7 +83,7 @@ class HomePresenterTest {
     presenter.registerSearchEditorActionEvent(clickObservable)
 
     verify(mockTextViewEditorActionEvent).actionId
-    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository, mockWord, mockTextViewEditorActionEvent)
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -100,22 +102,11 @@ class HomePresenterTest {
           words == listOf(mockWord)
     })
     verify(mockTextViewEditorActionEvent).actionId
-    verify(mockView).hideKeyboard()
-    verify(mockView).showProgress()
-    verify(mockView).languageSelectionStates
-    verify(mockView).searchTerm
-    verify(mockView).words = listOf(mockWord)
-    verify(mockView).hideProgress()
-    verify(mockView).showBackMenu()
-    verify(mockView).showSearchResults()
-    verify(mockView).recentSearches = listOf(mockRecentSearch)
-    verifyNoMoreInteractions(
-      mockView,
-      mockGoogleDictionaryRepository,
-      mockWord,
-      mockTextViewEditorActionEvent,
-      mockSharedPreferencesRepository
-    )
+    verifyPrepareSearchInteractions()
+    verifySearchSuccessInteractions()
+    verify(mockView).setRecentSearches(listOf(mockRecentSearch))
+    verifyLanguageSelectionInteractions()
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -133,21 +124,11 @@ class HomePresenterTest {
           language == Language.SPANISH &&
           words == listOf(mockWord)
     })
-    verify(mockView).hideKeyboard()
-    verify(mockView).showProgress()
-    verify(mockView).languageSelectionStates
-    verify(mockView).searchTerm
-    verify(mockView).words = listOf(mockWord)
-    verify(mockView).hideProgress()
-    verify(mockView).showBackMenu()
-    verify(mockView).showSearchResults()
-    verify(mockView).recentSearches = listOf(mockRecentSearch)
-    verifyNoMoreInteractions(
-      mockView,
-      mockGoogleDictionaryRepository,
-      mockWord,
-      mockSharedPreferencesRepository
-    )
+    verifyPrepareSearchInteractions()
+    verifySearchSuccessInteractions()
+    verify(mockView).setRecentSearches(listOf(mockRecentSearch))
+    verifyLanguageSelectionInteractions()
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -159,7 +140,8 @@ class HomePresenterTest {
 
     verify(mockView).languageSelectionStates
     verify(mockView).searchTerm
-    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository)
+    verifyLanguageSelectionInteractions()
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -178,16 +160,10 @@ class HomePresenterTest {
           words == listOf(mockWord)
     })
     verify(mockGoogleDictionaryRepository).singleSearchWord(Language.DEFAULT_LANGUAGE.languageTag, TEST_SEARCH_TERM)
-    verify(mockView).words = listOf(mockWord)
-    verify(mockView).languageSelectionStates
-    verify(mockView).searchTerm
-    verify(mockView).hideKeyboard()
-    verify(mockView).showProgress()
-    verify(mockView).hideProgress()
-    verify(mockView).showBackMenu()
-    verify(mockView).showSearchResults()
-    verify(mockView).recentSearches = any()
-    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository, mockWord, mockSharedPreferencesRepository)
+    verifyPrepareSearchInteractions()
+    verifySearchSuccessInteractions()
+    verify(mockView).setRecentSearches(listOf(mockRecentSearch))
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -206,21 +182,11 @@ class HomePresenterTest {
           language == Language.DEFAULT_LANGUAGE &&
           words == listOf(mockWord)
     })
-    verify(mockView).hideKeyboard()
-    verify(mockView).showProgress()
-    verify(mockView).languageSelectionStates
-    verify(mockView).searchTerm
-    verify(mockView).words = listOf(mockWord)
-    verify(mockView).hideProgress()
-    verify(mockView).showBackMenu()
-    verify(mockView).showSearchResults()
-    verify(mockView).recentSearches = listOf(mockRecentSearch)
-    verifyNoMoreInteractions(
-      mockView,
-      mockGoogleDictionaryRepository,
-      mockWord,
-      mockSharedPreferencesRepository
-    )
+    verifyPrepareSearchInteractions()
+    verifySearchSuccessInteractions()
+    verify(mockView).setRecentSearches(listOf(mockRecentSearch))
+    verify(mockLanguageSelectionState).selected
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -233,13 +199,11 @@ class HomePresenterTest {
     presenter.registerSearchButtonObservable(clickObservable)
 
     verify(mockGoogleDictionaryRepository).singleSearchWord(Language.SPANISH.languageTag, TEST_SEARCH_TERM)
-    verify(mockView).hideKeyboard()
-    verify(mockView).showProgress()
-    verify(mockView).languageSelectionStates
-    verify(mockView).searchTerm
+    verifyPrepareSearchInteractions()
     verify(mockView).hideProgress()
     verify(mockView).showDefinitionNotFoundError()
-    verifyNoMoreInteractions(mockView, mockGoogleDictionaryRepository)
+    verifyLanguageSelectionInteractions()
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -247,7 +211,23 @@ class HomePresenterTest {
     presenter.handleLanguageMenuItemSelected()
 
     verify(mockView).showLanguageSelector()
-    verifyNoMoreInteractions(mockView)
+    verifyNoMoreInteractions()
+  }
+
+  @Test
+  fun testHandleFeedbackMenuItemSelected() {
+    presenter.handleFeedbackMenuItemSelected()
+
+    verify(mockView).startEmailIntent(FEEDBACK_EMAIL_ADDRESS, FEEDBACK_EMAIL_SUBJECT)
+    verifyNoMoreInteractions()
+  }
+
+  @Test
+  fun testHandleAboutMenuItemSelected() {
+    presenter.handleAboutMenuItemSelected()
+
+    verify(mockView).startAboutActivity()
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -260,14 +240,14 @@ class HomePresenterTest {
           count { it.selected } == 1 &&
           find { it.selected }!!.language == Language.SPANISH
     }
-    verifyNoMoreInteractions(mockView, mockLanguageSelectionState)
+    verifyNoMoreInteractions()
   }
 
   @Test
   fun testHandleLanguageClickedWithNullClickedLanguage() {
     presenter.handleLanguageClicked(null)
 
-    verifyZeroInteractions(mockView)
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -279,7 +259,7 @@ class HomePresenterTest {
     verify(mockLanguageSelectionState).language
     verify(mockView).languageSelectionStates
     verify(mockView).recreateView()
-    verifyNoMoreInteractions(mockView, mockLanguageSelectionState, mockSharedPreferencesRepository)
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -290,7 +270,7 @@ class HomePresenterTest {
 
     verify(mockView).languageSelectionStates
     verify(mockView).showLanguageSelectionError()
-    verifyNoMoreInteractions(mockView, mockLanguageSelectionState, mockSharedPreferencesRepository)
+    verifyNoMoreInteractions()
   }
 
   @Test
@@ -298,8 +278,126 @@ class HomePresenterTest {
     presenter.handleRateMenuItemSelected()
 
     verify(mockView).startPlayStoreIntent()
-    verifyNoMoreInteractions(mockView)
+    verifyNoMoreInteractions()
   }
+
+  @Test
+  fun testHandleRecentSearchClicked() {
+    doReturn(listOf(mockWord)).whenever(mockRecentSearch).words
+    doReturn(TEST_SEARCH_TERM).whenever(mockRecentSearch).searchTerm
+    doReturn(Language.DEFAULT_LANGUAGE).whenever(mockRecentSearch).language
+
+    presenter.handleRecentSearchClicked(mockRecentSearch)
+
+    verify(mockSharedPreferencesRepository).getRecentSearches()
+    verify(mockSharedPreferencesRepository).addRecentSearch(argThat {
+      searchTerm == TEST_SEARCH_TERM &&
+          language == Language.DEFAULT_LANGUAGE &&
+          words == listOf(mockWord)
+    })
+    verify(mockRecentSearch).searchTerm
+    verify(mockRecentSearch).language
+    verify(mockRecentSearch).words
+    verify(mockView).setRecentSearches(listOf(mockRecentSearch))
+    verifySearchSuccessInteractions()
+    verifyNoMoreInteractions()
+  }
+
+  @Test
+  fun testHandleRecentSearchClickedWithNullField() {
+    doReturn(null).whenever(mockRecentSearch).words
+
+    presenter.handleRecentSearchClicked(mockRecentSearch)
+
+    verify(mockRecentSearch).searchTerm
+    verify(mockRecentSearch).language
+    verify(mockRecentSearch).words
+    verifyNoMoreInteractions()
+  }
+
+  @Test
+  fun testHandleBackPressedWithMenuDisplayed() {
+    doReturn(true).whenever(mockView).isMenuDisplayed
+
+    presenter.handleBackPressed()
+
+    verify(mockView).isMenuDisplayed
+    verify(mockView).hideMenu()
+    verifyNoMoreInteractions()
+  }
+
+  @Test
+  fun testHandleBackPressedWithDefinitionDisplayed() {
+    doReturn(true).whenever(mockView).isDefinitionDisplayed
+
+    presenter.handleBackPressed()
+
+    verify(mockView).isMenuDisplayed
+    verify(mockView).isDefinitionDisplayed
+    verify(mockView).setWords(null)
+    verify(mockView).showRecentSearches()
+    verifyNoMoreInteractions()
+  }
+
+  @Test
+  fun testHandleBackPressedWithExit() {
+    presenter.handleBackPressed()
+
+    verify(mockView).isMenuDisplayed
+    verify(mockView).isDefinitionDisplayed
+    verify(mockView).exit()
+    verifyNoMoreInteractions()
+  }
+
+  @Test
+  fun testHandleHomePressedWithDefinitionDisplayed() {
+    doReturn(true).whenever(mockView).isDefinitionDisplayed
+
+    presenter.handleHomePressed()
+
+    verify(mockView).isDefinitionDisplayed
+    verify(mockView).setWords(null)
+    verify(mockView).showRecentSearches()
+    verifyNoMoreInteractions()
+  }
+
+  @Test
+  fun testHandleHomePressedWithRecentDisplayed() {
+    presenter.handleHomePressed()
+
+    verify(mockView).isDefinitionDisplayed
+    verify(mockView).showMenu()
+    verifyNoMoreInteractions()
+  }
+
+  private fun verifyPrepareSearchInteractions() {
+    verify(mockView).hideKeyboard()
+    verify(mockView).showProgress()
+    verify(mockView).languageSelectionStates
+    verify(mockView).searchTerm
+  }
+
+  private fun verifySearchSuccessInteractions() {
+    verify(mockView).setWords(listOf(mockWord))
+    verify(mockView).hideProgress()
+    verify(mockView).showBackMenu()
+    verify(mockView).showSearchResults()
+  }
+
+  private fun verifyLanguageSelectionInteractions() {
+    verify(mockLanguageSelectionState).selected
+    verify(mockLanguageSelectionState).language
+  }
+
+  private fun verifyNoMoreInteractions() = verifyNoMoreInteractions(
+    mockView,
+    mockWord,
+    mockRecentSearch,
+    mockGoogleDictionaryRepository,
+    mockSharedPreferencesRepository,
+    mockTextViewEditorActionEvent,
+    mockLanguageSelectionState
+  )
 
   private companion object {
     private const val TEST_SEARCH_LANGUAGE = "keyLanguage"
