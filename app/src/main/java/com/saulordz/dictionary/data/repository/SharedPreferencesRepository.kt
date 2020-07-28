@@ -36,7 +36,7 @@ class SharedPreferencesRepository @Inject constructor() {
       .orDefault(UserPreferences.DEFAULT_USER_PREFERENCES)
 
   internal companion object {
-    internal const val MAX_RECENT_SEARCHES = 3
+    internal const val MAX_RECENT_SEARCHES = 10
   }
 }
 

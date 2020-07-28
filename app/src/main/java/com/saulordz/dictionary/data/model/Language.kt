@@ -7,8 +7,9 @@ import com.saulordz.dictionary.utils.extensions.orDefault
 import java.util.*
 
 enum class Language(@StringRes val languageStringRes: Int, val languageTag: String) {
-  SPANISH(R.string.message_spanish, "es"),
-  ENGLISH(R.string.message_english, "en");
+  ENGLISH(R.string.message_english, "en"),
+  ITALIAN(R.string.message_italian, "it"),
+  SPANISH(R.string.message_spanish, "es");
 
   internal companion object {
     @SuppressLint("ConstantLocale")
