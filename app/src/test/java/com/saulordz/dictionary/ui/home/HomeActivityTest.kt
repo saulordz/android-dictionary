@@ -97,8 +97,9 @@ class HomeActivityTest : BaseActivityTest() {
   fun testOnHomePressedClosesKeyboard() = letActivity<HomeActivity> {
     it.onHomePressed()
 
-    verify(mockInputMethodManager).hideSoftInputFromWindow(it.window.decorView.rootView.windowToken, 0)
-    verifyNoMoreInteractions(mockInputMethodManager)
+    verifyPresenterOnCreateInteractions(it)
+    verify(mockPresenter).handleHomePressed()
+    verifyNoMoreInteractions(mockPresenter)
   }
 
   @Test

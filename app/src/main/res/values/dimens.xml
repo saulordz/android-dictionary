@@ -11,6 +11,7 @@
     <dimen name="icon_about_height">100dp</dimen>
 
     <dimen name="item_definition_height">48dp</dimen>
+    <dimen name="item_recent_search_height">24dp</dimen>
 
     <dimen name="margin_standard_horizontal">8dp</dimen>
     <dimen name="margin_small_horizontal">4dp</dimen>

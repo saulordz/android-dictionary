@@ -13,13 +13,13 @@ import kotlinx.android.synthetic.main.include_main_toolbar.*
 internal val AppCompatActivity.isDrawerOpen
   get() = a_base_drawer?.isDrawerOpen(GravityCompat.START).orFalse()
 
-internal fun AppCompatActivity.hideInputKeyboard(inputMethodManager: InputMethodManager) {
+internal fun AppCompatActivity.hideInputKeyboard(inputMethodManager: InputMethodManager) =
   window.decorView.rootView.hideInputKeyboard(inputMethodManager)
-}
 
 internal fun AppCompatActivity.createBackToolbar() {
   setSupportActionBar(i_main_toolbar)
 
+  supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_arrow)
   supportActionBar?.setDisplayHomeAsUpEnabled(true)
 }
 
@@ -35,5 +35,6 @@ internal fun AppCompatActivity.createDrawerToolbar() {
   i_main_navigation.bringToFront()
 }
 
-internal fun AppCompatActivity.closeDrawer() =
+internal fun AppCompatActivity.closeDrawer() {
   a_base_drawer?.closeDrawer(GravityCompat.START)
+}

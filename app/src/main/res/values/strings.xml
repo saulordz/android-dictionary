@@ -11,6 +11,7 @@
     <string name="message_english">English</string>
     <string name="message_feedback">Tell us what you think</string>
     <string name="message_language">Language</string>
+    <string name="message_language_name">(%s)</string>
     <string name="message_privacy_policy">Privacy Policy</string>
     <string name="message_rate_app">Rate the app!</string>
     <string name="message_search">Search</string>

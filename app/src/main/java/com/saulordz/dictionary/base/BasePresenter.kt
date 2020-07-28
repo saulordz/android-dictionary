@@ -66,6 +66,13 @@ abstract class BasePresenter<V : BaseContract.View>(
       .subscribe({ ifViewAttached { onSuccess(it) } }) { onError(it) }
   }
 
+  internal fun Observable<CharSequence>.onObservableTextChanged(onSuccess: (V, CharSequence) -> Unit) = addDisposable {
+    share()
+      .subscribe({ newText ->
+        ifViewAttached { onSuccess(it, newText) }
+      }) { onError(it) }
+  }
+
   internal companion object {
     private const val DEFAULT_ERROR_MESSAGE = "Unknown error"
 
