@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Meanings</string>
+    <string name="app_publisher">di Virtroop Develop</string>
+
+    <string name="language_selection_error">Errore durante la selezione della nuova lingua.</string>
+
+    <string name="message_about_app">informazioni sull\'app</string>
+    <string name="message_apply">Applicare</string>
+    <string name="message_cancel">Anulla</string>
+    <string name="message_communicate">Comunicate</string>
+    <string name="message_english">Inglese</string>
+    <string name="message_feedback">Dacci la tua opinione</string>
+    <string name="message_italian">Italiano</string>
+    <string name="message_language">Lingua</string>
+    <string name="message_language_name">(%s)</string>
+    <string name="message_privacy_policy">politica sulla riservatezza</string>
+    <string name="message_rate_app">Valutaci!</string>
+    <string name="message_search">Cercare</string>
+    <string name="message_toolbar_close">Chiudere</string>
+    <string name="message_toolbar_open">Aperto</string>
+    <string name="message_select_language">Seleziona la lingua</string>
+    <string name="message_settings">Opzioni</string>
+    <string name="message_spanish">Spagnolo</string>
+    <string name="message_version">Versione: %s</string>
+
+    <string name="word_not_found_error">Nessuna definizione trovata per: %s</string>
+</resources>
