@@ -14,3 +14,9 @@ internal fun Assert<TextView>.hasText(@StringRes expectedResourceId: Int, vararg
   val expectedText = actual.context.getString(expectedResourceId, *formatArgs)
   assertThat(actual).hasText(expectedText)
 }
+
+internal fun Assert<TextView>.hasText(@StringRes expectedResourceId: Int, @StringRes expectedArgResId: Int) = given { actual ->
+  val expectedFormatArg = actual.context.getString(expectedArgResId)
+  val expectedText = actual.context.getString(expectedResourceId, expectedFormatArg)
+  assertThat(actual).hasText(expectedText)
+}

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.VisibleForTesting
-import androidx.core.view.GravityCompat
 import com.afollestad.materialdialogs.DialogCallback
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.editorActionEvents
@@ -73,15 +72,6 @@ class HomeActivity
   override val isMenuDisplayed: Boolean
     get() = isDrawerOpen
 
-  override var words: List<Word>? = null
-    set(value) {
-      a_home_word_recycler.removeAllViews()
-      wordAdapter.submitList(value)
-    }
-
-  override var recentSearches: List<RecentSearch>? = null
-    set(value) = recentSearchAdapter.submitList(value)
-
   override var languageSelectionStates: List<LanguageSelectionState>? = null
     set(value) {
       field = value
@@ -105,7 +95,7 @@ class HomeActivity
     showError(getString(R.string.word_not_found_error, searchTerm))
 
   override fun showLanguageSelectionError() =
-    showError(getString(R.string.word_not_found_error))
+    showError(getString(R.string.language_selection_error))
 
   override fun showProgress() = a_home_spinner.makeVisible()
 
@@ -150,8 +140,16 @@ class HomeActivity
 
   override fun showMenu() {
     hideKeyboard()
-    a_base_drawer.openDrawer(GravityCompat.START)
+    openDrawer()
   }
+
+  override fun setWords(words: List<Word>?) {
+    a_home_word_recycler.removeAllViews()
+    wordAdapter.submitList(words)
+  }
+
+  override fun setRecentSearches(searches: List<RecentSearch>) =
+    recentSearchAdapter.submitList(searches)
 
   private fun initViews() {
     presenter.registerSearchButtonObservable(a_home_search_button.clicks())

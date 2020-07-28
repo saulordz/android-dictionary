@@ -1,0 +1,66 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+project.afterEvaluate {
+    android.applicationVariants.all { variant ->
+        def variantName = variant.name
+        def testTaskName = "test${variantName.capitalize()}UnitTest"
+
+        tasks.create(name: "${testTaskName}Coverage", type: JacocoReport, dependsOn: testTaskName) {
+            group = "Reporting"
+            description = "Generate Jacoco coverage reports for the ${variantName.capitalize()} build."
+
+            reports {
+                html.enabled = true
+            }
+
+            def excludes = [
+                    '**/R.class',
+                    '**/R$*.class',
+                    '**/BuildConfig.*',
+                    '**/Manifest*.*',
+                    '**/*Module.class',
+                    '**/*Test*.*',
+                    'android/**/*.*',
+                    '**/**$$Factory*.*',
+                    '**/**$$MemberInjector*.*',
+                    '**/**__Factory*.*',
+                    '**/**__MemberInjector*.*',
+                    'com/saulordz/dictionary/FactoryRegistry.class',
+                    'com/saulordz/dictionary/MemberInjectorRegistry.class',
+                    'com/saulordz/dictionary/data/analytics/adobe/AdobeAnalyticsService*.class',
+                    'com/saulordz/dictionary/data/analytics/fabric/FabricAnalyticsService*.class',
+                    'com/saulordz/dictionary/data/model/**/**$Creator.class',
+                    'com/saulordz/dictionary/data/model/**/**JsonAdapter.class',
+                    'com/saulordz/dictionary/di/Scopes.*',
+                    'com/saulordz/dictionary/di',
+                    'com/saulordz/dictionary/rx/*.*'
+            ]
+
+            classDirectories.from = files([
+                    fileTree(dir: variant.javaCompiler.destinationDir, excludes: excludes),
+                    fileTree(dir: "${buildDir}/tmp/kotlin-classes/${variantName}", excludes: excludes)
+            ])
+
+            sourceDirectories.from = files([
+                    "$project.projectDir/src/main/java",
+                    "$project.projectDir/src/${variantName}/java",
+                    "$project.projectDir/src/main/kotlin",
+                    "$project.projectDir/src/${variantName}/kotlin"
+            ])
+
+            executionData.from = files("${project.buildDir}/jacoco/${testTaskName}.exec")
+
+            doLast {
+                println "\nFinished creating JaCoCo coverage report -> ${buildDir}/reports/jacoco/${testTaskName}Coverage/html/index.html"
+            }
+        }
+    }
+}

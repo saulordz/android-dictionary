@@ -89,7 +89,7 @@ class HomePresenter @Inject constructor(
   }
 
   private fun showRecentSearches() = ifViewAttached { view ->
-    view.words = null
+    view.setWords(null)
     view.showRecentSearches()
   }
 
@@ -114,13 +114,13 @@ class HomePresenter @Inject constructor(
     handleSearchResults(words)
   }
 
-  private fun saveSearch(searchTerm: String, language: Language, words: List<Word>) = ifViewAttached { view ->
+  private fun saveSearch(searchTerm: String, language: Language, words: List<Word>) = ifViewAttached {
     val recentSearch = RecentSearch(searchTerm, language, words)
     sharedPreferencesRepository.addRecentSearch(recentSearch)
   }
 
   private fun handleSearchResults(words: List<Word>) = ifViewAttached { view ->
-    view.words = words
+    view.setWords(words)
     view.showBackMenu()
     view.showSearchResults()
     view.hideProgress()
@@ -128,7 +128,7 @@ class HomePresenter @Inject constructor(
   }
 
   private fun loadRecentSearches() = ifViewAttached { view ->
-    view.recentSearches = sharedPreferencesRepository.getRecentSearches()
+    view.setRecentSearches(sharedPreferencesRepository.getRecentSearches())
   }
 
   private fun loadUserLanguage() = ifViewAttached { view ->
